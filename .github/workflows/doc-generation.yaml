@@ -73,27 +73,27 @@ jobs:
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: s1-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          name: Semana 1
           path: outcomes/s1-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: s2-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          name: Semana 2
           path: outcomes/s2-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: s3-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          name: Semana 3
           path: outcomes/s3-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: s4-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          name: Semana 4
           path: outcomes/s4-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: tech_report-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          name: Technical Report
           path: outcomes/tech_report-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
 
       - name: Release
