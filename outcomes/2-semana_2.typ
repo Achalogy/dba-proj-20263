@@ -39,6 +39,9 @@
 
 #outline()
 
+#pagebreak()
 #include "../docs/3-data_acq_and_verification.typ"
+#pagebreak()
 #include "../docs/4-data_integrity_and_format.typ"
+#pagebreak()
 #include "../docs/5-nosql_spatial_integration.typ"

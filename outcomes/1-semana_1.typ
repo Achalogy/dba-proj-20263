@@ -39,5 +39,7 @@
 
 #outline()
 
+#pagebreak()
 #include "../docs/1-implementation_plan.typ"
+#pagebreak()
 #include "../docs/2-schema_and_data_modeling.typ"

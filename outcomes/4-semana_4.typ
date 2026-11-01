@@ -39,5 +39,7 @@
 
 #outline()
 
+#pagebreak()
 #include "../docs/8-reproducibility_and_methodology.typ"
+#pagebreak()
 #include "../docs/9-output_data_structure.typ"
