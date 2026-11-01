@@ -64,37 +64,37 @@ jobs:
 
       - name: Compile Typst documents
         run: |
-          typst compile --font-path ~/.local/share/fonts outcomes/1-semana_1.typ --root . --input version="${{ github.ref_name }}"
-          typst compile --font-path ~/.local/share/fonts outcomes/2-semana_2.typ --root . --input version="${{ github.ref_name }}"
-          typst compile --font-path ~/.local/share/fonts outcomes/3-semana_3.typ --root . --input version="${{ github.ref_name }}"
-          typst compile --font-path ~/.local/share/fonts outcomes/4-semana_4.typ --root . --input version="${{ github.ref_name }}"
-          typst compile --font-path ~/.local/share/fonts outcomes/5-final-technical-report.typ --root . --input version="${{ github.ref_name }}"
+          typst compile --font-path ~/.local/share/fonts outcomes/1-semana_1.typ --root . --input version="${{ github.ref_name }}" outcomes/s1-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
+          typst compile --font-path ~/.local/share/fonts outcomes/2-semana_2.typ --root . --input version="${{ github.ref_name }}" outcomes/s2-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
+          typst compile --font-path ~/.local/share/fonts outcomes/3-semana_3.typ --root . --input version="${{ github.ref_name }}" outcomes/s3-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
+          typst compile --font-path ~/.local/share/fonts outcomes/4-semana_4.typ --root . --input version="${{ github.ref_name }}" outcomes/s4-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
+          typst compile --font-path ~/.local/share/fonts outcomes/5-final-technical-report.typ --root . --input version="${{ github.ref_name }}" outcomes/tech_report-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
 
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: semana 1
-          path: outcomes/1-semana_1.pdf
+          name: s1-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          path: outcomes/s1-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: semana 2
-          path: outcomes/2-semana_2.pdf
+          name: s2-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          path: outcomes/s2-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: semana 3
-          path: outcomes/3-semana_3.pdf
+          name: s3-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          path: outcomes/s3-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: semana 4
-          path: outcomes/4-semana_4.pdf
+          name: s4-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          path: outcomes/s4-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: reporte tecnico
-          path: outcomes/5-final-technical-report.pdf
+          name: tech_report-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel
+          path: outcomes/tech_report-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -103,8 +103,8 @@ jobs:
           name: "${{ github.ref_name }}"
           tag_name: "${{ github.ref_name }}"
           files: |
-            outcomes/1-semana_1.pdf
-            outcomes/2-semana_2.pdf
-            outcomes/3-semana_3.pdf
-            outcomes/4-semana_4.pdf
-            outcomes/5-final-technical-report.pdf
+            outcomes/s1-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
+            outcomes/s2-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
+            outcomes/s3-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
+            outcomes/s4-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
+            outcomes/tech_report-dba_final_proj-juliana-juan_saavedra-juan_garzon-miguel.pdf
