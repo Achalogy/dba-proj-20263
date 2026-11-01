@@ -73,8 +73,28 @@ jobs:
       - name: Upload PDF file
         uses: actions/upload-artifact@v4
         with:
-          name: PDF
-          path: outcomes/*.pdf
+          name: semana 1
+          path: outcomes/1-semana_1.pdf
+      - name: Upload PDF file
+        uses: actions/upload-artifact@v4
+        with:
+          name: semana 2
+          path: outcomes/2-semana_2.pdf
+      - name: Upload PDF file
+        uses: actions/upload-artifact@v4
+        with:
+          name: semana 3
+          path: outcomes/3-semana_3.pdf
+      - name: Upload PDF file
+        uses: actions/upload-artifact@v4
+        with:
+          name: semana 4
+          path: outcomes/4-semana_4.pdf
+      - name: Upload PDF file
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte tecnico
+          path: outcomes/5-final-technical-report.pdf
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -83,9 +103,8 @@ jobs:
           name: "${{ github.ref_name }}"
           tag_name: "${{ github.ref_name }}"
           files: |
-              outcomes/1-semana_1.pdf
-              outcomes/2-semana_2.pdf
-              outcomes/3-semana_3.pdf
-              outcomes/4-semana_4.pdf
-              outcomes/5-final-technical-report.pdf  
-            
+            outcomes/1-semana_1.pdf
+            outcomes/2-semana_2.pdf
+            outcomes/3-semana_3.pdf
+            outcomes/4-semana_4.pdf
+            outcomes/5-final-technical-report.pdf
