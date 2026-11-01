@@ -15,8 +15,8 @@
   #v(1.5cm)
 
   Juliana Sofía Novoa Solano \
-  Juliana Sofía Novoa Solano \
-  Juliana Sofía Novoa Solano \
+  Juan Santiago Saavedra Holguin \
+  Juan Garzón Tinjaca \
   Miguel Francisco Vargas Contreras
 
   #v(1cm)
