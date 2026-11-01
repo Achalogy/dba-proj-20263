@@ -1,0 +1,88 @@
+name: Build and Release Documentation
+
+on: [push, workflow_dispatch]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      #       - name: Convert Drawio diagrams to PNG
+      #         uses: rlespinasse/drawio-export-action@v2
+      #         with:
+      #           action-mode: all
+      #           path: docs/diagrams/
+      #           output: ""
+      #           format: png
+      #           transparent: false
+      #           remove-page-suffix: true
+      #           quality: 100
+      #           scale: 2
+      #
+      #       - name: Convert Component Drawio diagrams to PNG
+      #         uses: rlespinasse/drawio-export-action@v2
+      #         with:
+      #           action-mode: all
+      #           path: docs/diagrams/components/
+      #           output: ""
+      #           format: png
+      #           transparent: false
+      #           remove-page-suffix: true
+      #           quality: 100
+      #           scale: 2
+      #
+      #       - name: Commit and push exported diagrams
+      #         if: github.ref_type == 'branch'
+      #         run: |
+      #           git config --global user.name "github-actions[bot]"
+      #           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #           git add docs/diagrams/
+      #           if ! git diff --staged --quiet; then
+      #             git commit -m "chore(docs): update exported diagram images [skip ci]"
+      #             git pull origin ${{ github.ref_name }} --rebase
+      #             git push origin HEAD:${{ github.ref }}
+      #           fi
+
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v3
+
+      - name: Install Local Fonts
+        run: |
+          mkdir -p ~/.local/share/fonts
+          cp .github/fonts/*.ttf ~/.local/share/fonts/
+          fc-cache -f -v
+
+      - name: Verify Font is Detected
+        run: "fc-list : family | grep -i 'Times New Roman'"
+
+      - name: Compile Typst documents
+        run: |
+          typst compile --font-path ~/.local/share/fonts outcomes/1-semana_1.typ --root . --input version="${{ github.ref_name }}"
+          typst compile --font-path ~/.local/share/fonts outcomes/2-semana_2.typ --root . --input version="${{ github.ref_name }}"
+          typst compile --font-path ~/.local/share/fonts outcomes/3-semana_3.typ --root . --input version="${{ github.ref_name }}"
+          typst compile --font-path ~/.local/share/fonts outcomes/4-semana_4.typ --root . --input version="${{ github.ref_name }}"
+          typst compile --font-path ~/.local/share/fonts outcomes/5-final-technical-report.typ --root . --input version="${{ github.ref_name }}"
+
+      - name: Upload PDF file
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDF
+          path: docs/*.pdf
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          name: "${{ github.ref_name }}"
+          tag_name: "${{ github.ref_name }}"
+          files: |
+            docs/bitacora.pdf
+            docs/arch-description.pdf
+            docs/dev.pdf
