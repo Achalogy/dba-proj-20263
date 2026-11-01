@@ -74,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PDF
-          path: docs/*.pdf
+          path: outcomes/*.pdf
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -83,6 +83,9 @@ jobs:
           name: "${{ github.ref_name }}"
           tag_name: "${{ github.ref_name }}"
           files: |
-            docs/bitacora.pdf
-            docs/arch-description.pdf
-            docs/dev.pdf
+              outcomes/1-semana_1.pdf
+              outcomes/2-semana_2.pdf
+              outcomes/3-semana_3.pdf
+              outcomes/4-semana_4.pdf
+              outcomes/5-final-technical-report.pdf  
+            
