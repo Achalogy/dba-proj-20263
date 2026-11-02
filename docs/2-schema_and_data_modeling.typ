@@ -58,7 +58,7 @@ El archivo `data/MunicipiosPDET.xlsx` constituye el insumo oficial de focalizaci
       [`Código DANE Municipio`],
       [`cod_dane_mpio`],
       [`UK`, `String (5)`],
-      [Llave primaria natural del municipio. En Excel viene como entero (ej. `5045` para Apartadó, `19050` para Argelia); se transforma con `str.zfill(5)` a `"05045"` para cruzar exactamente con `MPIO_CDPMP` del MGN-DANE.],
+      [Llave única natural del municipio (código DANE único para cada uno de los 170 municipios PDET). En Excel viene como entero (ej. `5045` para Apartadó, `19050` para Argelia); se transforma con `str.zfill(5)` a `"05045"` para cruzar exactamente con `MPIO_CDPMP` del MGN-DANE.],
 
       [`Municipio`],
       [`municipio`],
@@ -348,6 +348,7 @@ db.buildings_microsoft.createIndex({ "cod_dane_mpio": 1, "rooftop_area_m2": -1 }
 // 3. Índices en buildings_google
 db.buildings_google.createIndex({ "full_plus_code": 1 }, { unique: true, name: "idx_uk_plus_code" });
 db.buildings_google.createIndex({ "geometry": "2dsphere" }, { name: "idx_geo_gg_footprint" });
+db.buildings_google.createIndex({ "centroid": "2dsphere" }, { name: "idx_geo_gg_centroid" });
 db.buildings_google.createIndex({ "cod_dane_mpio": 1, "confidence": -1 }, { name: "idx_gg_mpio_conf" });
 
 // 4. Índices en solar_aggregations

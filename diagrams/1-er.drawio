@@ -19,7 +19,7 @@
         <mxCell id="xlsx_f4" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="      departamento : String" vertex="1">
           <mxGeometry height="28" width="420" y="128" as="geometry" />
         </mxCell>
-        <mxCell id="xlsx_f5" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#E5F0FF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="&lt;b&gt;PK&lt;/b&gt;  cod_dane_mpio : Int32" vertex="1">
+        <mxCell id="xlsx_f5" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#E5F0FF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="&lt;b&gt;UK&lt;/b&gt;  cod_dane_mpio : Int32" vertex="1">
           <mxGeometry height="28" width="420" y="156" as="geometry" />
         </mxCell>
         <mxCell id="xlsx_f6" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="      municipio : String" vertex="1">
@@ -76,7 +76,7 @@
         <mxCell id="ms_f5" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#E6F4E6;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#145218;" value="&lt;b&gt;2dsphere&lt;/b&gt;  geometry : GeoJSON {type: Polygon, coordinates}" vertex="1">
           <mxGeometry height="32" width="430" y="158" as="geometry" />
         </mxCell>
-        <mxCell id="ms_f6" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#1B3B1E;" value="      centroid : GeoJSON {type: Point, coordinates: [lon, lat]}" vertex="1">
+        <mxCell id="ms_f6" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#E6F4E6;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#145218;" value="&lt;b&gt;2dsphere&lt;/b&gt;  centroid : GeoJSON {type: Point, coordinates: [lon, lat]}" vertex="1">
           <mxGeometry height="28" width="430" y="190" as="geometry" />
         </mxCell>
         <mxCell id="ms_f7" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#F4FAF4;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#1B3B1E;" value="      rooftop_area_m2 : Double  &lt;i&gt;[Área calculada EPSG:9377]&lt;/i&gt;" vertex="1">
@@ -106,7 +106,7 @@
         <mxCell id="gg_f5" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFF6D6;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#7A4F00;" value="&lt;b&gt;2dsphere&lt;/b&gt;  geometry : GeoJSON {type: Polygon, coordinates}" vertex="1">
           <mxGeometry height="32" width="430" y="158" as="geometry" />
         </mxCell>
-        <mxCell id="gg_f6" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="      centroid : GeoJSON {type: Point, coordinates: [lon, lat]}" vertex="1">
+        <mxCell id="gg_f6" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFF6D6;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#7A4F00;" value="&lt;b&gt;2dsphere&lt;/b&gt;  centroid : GeoJSON {type: Point, coordinates: [lon, lat]}" vertex="1">
           <mxGeometry height="28" width="430" y="190" as="geometry" />
         </mxCell>
         <mxCell id="gg_f7" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFDF5;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="      area_in_meters : Double  &lt;i&gt;[Área original reportada por Google m²]&lt;/i&gt;" vertex="1">
@@ -133,13 +133,13 @@
         <mxCell id="agg_f3" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FAF7FC;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      municipio : String  |  departamento : String  |  subregion_pdet : Object" vertex="1">
           <mxGeometry height="28" width="440" y="102" as="geometry" />
         </mxCell>
-        <mxCell id="agg_f4" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      metrics_microsoft : Object {building_count, total_area_m2, total_area_ha, avg_area_m2}" vertex="1">
+        <mxCell id="agg_f4" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      metrics_microsoft : Object {building_count, total_area_m2, total_area_ha, avg_area_m2, median_area_m2}" vertex="1">
           <mxGeometry height="32" width="440" y="130" as="geometry" />
         </mxCell>
-        <mxCell id="agg_f5" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FAF7FC;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      metrics_google : Object {building_count, total_area_m2, total_area_ha, avg_conf}" vertex="1">
+        <mxCell id="agg_f5" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FAF7FC;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      metrics_google : Object {building_count, total_area_m2, total_area_ha, avg_area_m2, avg_confidence}" vertex="1">
           <mxGeometry height="32" width="440" y="162" as="geometry" />
         </mxCell>
-        <mxCell id="agg_f6" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      comparison_metrics : Object {delta_count, delta_area_pct, rooftop_density_pct}" vertex="1">
+        <mxCell id="agg_f6" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      comparison_metrics : Object {delta_count, delta_area_m2, delta_area_pct, rooftop_density_pct}" vertex="1">
           <mxGeometry height="32" width="440" y="194" as="geometry" />
         </mxCell>
         <mxCell id="agg_f7" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FAF7FC;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      solar_potential : Object {usable_roof_m2, est_capacity_kwp, priority_rank}" vertex="1">
