@@ -150,7 +150,7 @@ La metodología adoptada sigue un ciclo integral de ingeniería de datos geoespa
 
 == Herramientas y Tecnologías Propuestas
 
-El stack tecnológico seleccionado garantiza procesamiento geoespacial de alto rendimiento, escalabilidad NoSQL y reproducibilidad absoluta del pipeline[cite: 2.2]:
+El stack tecnológico seleccionado garantiza procesamiento geoespacial de alto rendimiento, escalabilidad NoSQL y reproducibilidad absoluta del pipeline :
 
 #figure(
   table(
@@ -159,38 +159,38 @@ El stack tecnológico seleccionado garantiza procesamiento geoespacial de alto r
     stroke: 0.5pt + luma(150),
     fill: (_, row) => if row == 0 { rgb("f0f4f8") } else { none },
     [*Herramienta*], [*Categoría*], [*Rol en el Proyecto*],
-    [Python 3.10+], [Lenguaje de Programación], [Lenguaje núcleo para la extracción, limpieza, transformación, orquestación de ingesta y modelado estadístico.][cite: 2.2],
-    [MongoDB (Community/Atlas)], [Motor de Base de Datos NoSQL], [Repositorio central documental BSON con indexación geoespacial 2dsphere y soporte de consultas espaciales nativas.][cite: 2.2],
-    [MongoDB Compass], [Cliente Gráfico NoSQL], [Inspección visual de esquemas documentales, validación de índices 2dsphere y depuración de pipelines de agregación.][cite: 2.2],
-    [GeoPandas], [Librería de Análisis Geoespacial], [Manipulación de GeoDataFrames, particionamiento espacial, operaciones vectoriales y generación de mapas temáticos.][cite: 2.2],
-    [Shapely], [Geometría Computacional], [Validación topológica, reparación de geometrías (`make_valid`), simplificación y cálculo de intersecciones poligonales.][cite: 2.2],
-    [PyProj], [Transformación Cartográfica], [Reproyección rigurosa entre CRS geodésico (WGS84 EPSG:4326) y métrico proyectado (MAGNA-SIRGAS EPSG:9377).][cite: 2.2],
-    [Pandas], [Procesamiento Tabular], [Consolidación de tablas resumen, agregaciones estadísticas, cálculo de discrepancias y métricas comparativas.][cite: 2.2],
-    [PyMongo], [Driver de Base de Datos], [Conexión e inserciones masivas por lotes (`bulk_write` con `InsertOne`) optimizando tiempos de I/O en MongoDB.][cite: 2.2],
-    [Git & GitHub], [Control de Versiones y CI], [Control de versiones del repositorio, gestión colaborativa por ramas, trazabilidad de commits y revisión por pull requests.][cite: 2.2],
-    [QGIS], [SIG de Escritorio], [Inspección visual cartográfica externa, control de calidad visual y validación de geometrías exportadas.][cite: 2.2]
+    [Python 3.10+], [Lenguaje de Programación], [Lenguaje núcleo para la extracción, limpieza, transformación, orquestación de ingesta y modelado estadístico.],
+    [MongoDB (Community/Atlas)], [Motor de Base de Datos NoSQL], [Repositorio central documental BSON con indexación geoespacial 2dsphere y soporte de consultas espaciales nativas.],
+    [MongoDB Compass], [Cliente Gráfico NoSQL], [Inspección visual de esquemas documentales, validación de índices 2dsphere y depuración de pipelines de agregación.],
+    [GeoPandas], [Librería de Análisis Geoespacial], [Manipulación de GeoDataFrames, particionamiento espacial, operaciones vectoriales y generación de mapas temáticos.],
+    [Shapely], [Geometría Computacional], [Validación topológica, reparación de geometrías (`make_valid`), simplificación y cálculo de intersecciones poligonales.],
+    [PyProj], [Transformación Cartográfica], [Reproyección rigurosa entre CRS geodésico (WGS84 EPSG:4326) y métrico proyectado (MAGNA-SIRGAS EPSG:9377).],
+    [Pandas], [Procesamiento Tabular], [Consolidación de tablas resumen, agregaciones estadísticas, cálculo de discrepancias y métricas comparativas.],
+    [PyMongo], [Driver de Base de Datos], [Conexión e inserciones masivas por lotes (`bulk_write` con `InsertOne`) optimizando tiempos de I/O en MongoDB.],
+    [Git & GitHub], [Control de Versiones y CI], [Control de versiones del repositorio, gestión colaborativa por ramas, trazabilidad de commits y revisión por pull requests.],
+    [QGIS], [SIG de Escritorio], [Inspección visual cartográfica externa, control de calidad visual y validación de geometrías exportadas.]
   ),
   caption: [Stack tecnológico del proyecto.]
 )
 
 == Reglas de Negocio Explícitas (RN-01 a RN-10)
 
-- *RN-01 (Alcance Territorial):* El análisis se circunscribe estrictamente a los 170 municipios priorizados como territorios PDET por el Gobierno Nacional y la ART[cite: 2.2].
-- *RN-02 (Estándar Geodésico de Almacenamiento):* Todas las geometrías almacenadas en MongoDB deben adoptar el estándar WGS84 (EPSG:4326) con formato GeoJSON válido[cite: 2.2].
-- *RN-03 (Exactitud Métrica de Áreas):* El cálculo del área de cubiertas ($m^2$) debe realizarse mediante proyección cartográfica métrica oficial (EPSG:9377 Origen Nacional) o cálculo geodésico elipsoidal[cite: 2.2].
-- *RN-04 (Umbral Mínimo de Confianza):* Para el conjunto Google Open Buildings, únicamente se consideran polígonos con un índice de confianza igual o superior a 0.65[cite: 2.2].
-- *RN-05 (Filtro de Área Plausible para Techos):* Se descartan huellas con área inferior a $10 m^2$ (ruido de detección satelital) y huellas con área superior a $20,000 m^2$ no validadas estructuralmente[cite: 2.2].
-- *RN-06 (Integridad Topológica Obligatoria):* Ninguna geometría con auto-intersecciones, anillos no cerrados o vértices inválidos puede insertarse en las colecciones limpias de la base de datos[cite: 2.2].
-- *RN-07 (Separación de Capas Raw vs Cleaned):* Se mantiene estricta segregación física o lógica entre las capas crudas (_raw data_ de ingesta) y las colecciones limpias y normalizadas (_cleaned data_)[cite: 2.2].
-- *RN-08 (Indexación Espacial 2dsphere):* Cada colección con datos vectoriales debe poseer un índice espacial 2dsphere activo sobre el campo `geometry` para habilitar consultas espaciales nativas[cite: 2.2].
-- *RN-09 (Trazabilidad y Linaje de Fuente):* Cada documento de huella debe incorporar obligatoriamente los atributos de linaje: `building_id`, `source`, `municipality_code` y timestamp de ingesta[cite: 2.2].
-- *RN-10 (Determinismo y Reproducibilidad):* La ejecución del pipeline automatizado sobre los mismos datasets de entrada debe producir idénticas métricas agregadas por municipio[cite: 2.2].
+- *RN-01 (Alcance Territorial):* El análisis se circunscribe estrictamente a los 170 municipios priorizados como territorios PDET por el Gobierno Nacional y la ART .
+- *RN-02 (Estándar Geodésico de Almacenamiento):* Todas las geometrías almacenadas en MongoDB deben adoptar el estándar WGS84 (EPSG:4326) con formato GeoJSON válido .
+- *RN-03 (Exactitud Métrica de Áreas):* El cálculo del área de cubiertas ($m^2$) debe realizarse mediante proyección cartográfica métrica oficial (EPSG:9377 Origen Nacional) o cálculo geodésico elipsoidal .
+- *RN-04 (Umbral Mínimo de Confianza):* Para el conjunto Google Open Buildings, únicamente se consideran polígonos con un índice de confianza igual o superior a 0.65 .
+- *RN-05 (Filtro de Área Plausible para Techos):* Se descartan huellas con área inferior a $10 m^2$ (ruido de detección satelital) y huellas con área superior a $20,000 m^2$ no validadas estructuralmente .
+- *RN-06 (Integridad Topológica Obligatoria):* Ninguna geometría con auto-intersecciones, anillos no cerrados o vértices inválidos puede insertarse en las colecciones limpias de la base de datos .
+- *RN-07 (Separación de Capas Raw vs Cleaned):* Se mantiene estricta segregación física o lógica entre las capas crudas (_raw data_ de ingesta) y las colecciones limpias y normalizadas (_cleaned data_) .
+- *RN-08 (Indexación Espacial 2dsphere):* Cada colección con datos vectoriales debe poseer un índice espacial 2dsphere activo sobre el campo `geometry` para habilitar consultas espaciales nativas .
+- *RN-09 (Trazabilidad y Linaje de Fuente):* Cada documento de huella debe incorporar obligatoriamente los atributos de linaje: `building_id`, `source`, `municipality_code` y timestamp de ingesta .
+- *RN-10 (Determinismo y Reproducibilidad):* La ejecución del pipeline automatizado sobre los mismos datasets de entrada debe producir idénticas métricas agregadas por municipio .
 
 == Niveles de Limpieza de Datos y Esquema Unificado de Huellas
 
-La arquitectura de datos implementa una estrategia de transformación por capas[cite: 2.2]:
-- *Capa Cruda (Raw Level):* Ingesta directa de archivos fuente en su formato nativo (GeoJSON, GeoParquet, CSV con WKT). Se preservan metadatos originales sin filtrado para garantizar auditoría técnica[cite: 2.2].
-- *Capa Limpia (Cleaned Level):* Aplicación de filtros de calidad (confianza $>= 0.65$, área entre $10 m^2$ y $20,000 m^2$), reparación topológica con Shapely y estructuración al esquema BSON unificado[cite: 2.2].
+La arquitectura de datos implementa una estrategia de transformación por capas :
+- *Capa Cruda (Raw Level):* Ingesta directa de archivos fuente en su formato nativo (GeoJSON, GeoParquet, CSV con WKT). Se preservan metadatos originales sin filtrado para garantizar auditoría técnica .
+- *Capa Limpia (Cleaned Level):* Aplicación de filtros de calidad (confianza $>= 0.65$, área entre $10 m^2$ y $20,000 m^2$), reparación topológica con Shapely y estructuración al esquema BSON unificado .
 
 == Roles Específicos del Equipo de Trabajo
 - *Analista de Requerimientos y Datos Territoriales (Juliana Novoa):* Formalización de especificaciones técnicas, adquisición del MGN 2025 DANE, filtrado oficial de los 170 municipios PDET y liderazgo del reporte técnico para la UPME.
@@ -200,8 +200,8 @@ La arquitectura de datos implementa una estrategia de transformación por capas[
 
 == Criterios de Finalización y Aceptación
 
-- Cobertura Territorial Total: Verificación exitosa del 100% de los 170 municipios PDET indexados y cruzados en la base de datos sin omisiones[cite: 2.2].
-- Cumplimiento de Reglas Topológicas: Tasa del 100% de geometrías válidas en las colecciones limpias tras el proceso de corrección geométrica[cite: 2.2].
-- Eficiencia en Consultas Espaciales: Confirmación de uso efectivo del índice 2dsphere en todas las agregaciones espaciales documentado mediante cursor.explain()[cite: 2.2].
-- Consistencia del Pipeline de Métricas: Generación determinística de tablas agregadas de área, recuento y análisis de discrepancia relativa entre fuentes[cite: 2.2].
-- Trazabilidad y Repartición Colaborativa: Historial de Git con aportes balanceados y verificables entre los cuatro integrantes y documentación técnica completa[cite: 2.2].
+- Cobertura Territorial Total: Verificación exitosa del 100% de los 170 municipios PDET indexados y cruzados en la base de datos sin omisiones .
+- Cumplimiento de Reglas Topológicas: Tasa del 100% de geometrías válidas en las colecciones limpias tras el proceso de corrección geométrica .
+- Eficiencia en Consultas Espaciales: Confirmación de uso efectivo del índice 2dsphere en todas las agregaciones espaciales documentado mediante cursor.explain() .
+- Consistencia del Pipeline de Métricas: Generación determinística de tablas agregadas de área, recuento y análisis de discrepancia relativa entre fuentes .
+- Trazabilidad y Repartición Colaborativa: Historial de Git con aportes balanceados y verificables entre los cuatro integrantes y documentación técnica completa .
