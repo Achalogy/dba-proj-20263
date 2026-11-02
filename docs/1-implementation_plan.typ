@@ -192,22 +192,6 @@ La arquitectura de datos implementa una estrategia de transformación por capas[
 - *Capa Cruda (Raw Level):* Ingesta directa de archivos fuente en su formato nativo (GeoJSON, GeoParquet, CSV con WKT). Se preservan metadatos originales sin filtrado para garantizar auditoría técnica[cite: 2.2].
 - *Capa Limpia (Cleaned Level):* Aplicación de filtros de calidad (confianza $>= 0.65$, área entre $10 m^2$ y $20,000 m^2$), reparación topológica con Shapely y estructuración al esquema BSON unificado[cite: 2.2].
 
-*Esquema BSON Unificado para la Colección Cleaned Buildings:*
-```json
-{
-  "_id": "ObjectId(...)",
-  "building_id": "String (identificador único original o hash sintético)",
-  "source": "String ('microsoft' | 'google')",
-  "geometry": {
-    "type": "Polygon",
-    "coordinates": [[[ -75.1234, 4.5678 ], ... ]]
-  },
-  "municipality_code": "String (código DANE 5 dígitos, ej. '19001')",
-  "area_m2": "Double (área calculada en proyección EPSG:9377)",
-  "confidence": "Double (opcional para Google, null para Microsoft)",
-  "processed_at": "ISODate(...)"
-}
-
 == Roles Específicos del Equipo de Trabajo
 - *Analista de Requerimientos y Datos Territoriales (Juliana Novoa):* Formalización de especificaciones técnicas, adquisición del MGN 2025 DANE, filtrado oficial de los 170 municipios PDET y liderazgo del reporte técnico para la UPME.
 - *Especialista en Adquisición y Calidad de Datos (Juan Saavedra):* Descarga y particionamiento de datasets masivos (Microsoft y Google), pipeline de limpieza topológica con Shapely y aplicación de reglas de negocio para capas raw y cleaned.
