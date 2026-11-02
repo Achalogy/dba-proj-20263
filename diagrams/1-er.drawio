@@ -1,0 +1,212 @@
+<mxfile host="Electron" agent="draw.io">
+  <diagram id="nosql-er-upme-pdet" name="Esquema E-R NoSQL (MongoDB)">
+    <mxGraphModel dx="963" dy="699" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1460" pageHeight="1060" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="col_xlsx" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=44;fillColor=#D0E2FF;pcFill=1;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=#0043CE;fontColor=#001D6C;strokeWidth=2;rounded=1;arcSize=4;" value="&lt;b&gt;«MunicipiosPDET.xlsx»&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 13px;&quot;&gt;&lt;b&gt;catalogo_municipios_pdet&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="212" width="420" x="40" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="xlsx_f1" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#F2F7FF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="&lt;b&gt;IDX&lt;/b&gt;  id : Int32" vertex="1">
+          <mxGeometry height="28" width="420" y="44" as="geometry" />
+        </mxCell>
+        <mxCell id="xlsx_f2" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="      subregion_pdet : String" vertex="1">
+          <mxGeometry height="28" width="420" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="xlsx_f3" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#F2F7FF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="      cod_dane_dpto : Int32&amp;nbsp;" vertex="1">
+          <mxGeometry height="28" width="420" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="xlsx_f4" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="      departamento : String" vertex="1">
+          <mxGeometry height="28" width="420" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="xlsx_f5" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#E5F0FF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="&lt;b&gt;UK&lt;/b&gt;  cod_dane_mpio : Int32" vertex="1">
+          <mxGeometry height="28" width="420" y="156" as="geometry" />
+        </mxCell>
+        <mxCell id="xlsx_f6" parent="col_xlsx" style="text;strokeColor=#A6C8FF;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#001D6C;" value="      municipio : String" vertex="1">
+          <mxGeometry height="28" width="420" y="184" as="geometry" />
+        </mxCell>
+        <mxCell id="col_mpio" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=46;fillColor=#DAE8FC;pcFill=1;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=#2B579A;fontColor=#102A43;strokeWidth=2;rounded=1;arcSize=4;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;municipalities_pdet&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="338" width="420" x="40" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="mpio_f1" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#F5F9FF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#102A43;" value="&lt;b&gt;PK&lt;/b&gt;  _id : ObjectId" vertex="1">
+          <mxGeometry height="28" width="420" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="mpio_f2" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#102A43;" value="&lt;b&gt;UK&lt;/b&gt;  cod_dane_mpio : String (5)" vertex="1">
+          <mxGeometry height="28" width="420" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="mpio_f3" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#F5F9FF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#102A43;" value="      cod_dane_dpto : String (2)" vertex="1">
+          <mxGeometry height="28" width="420" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="mpio_f4" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#102A43;" value="      municipio : String" vertex="1">
+          <mxGeometry height="28" width="420" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ipICxIFydEBoZpmgsvgX-2" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#102A43;" value="      departamento : String" vertex="1">
+          <mxGeometry height="28" width="420" y="158" as="geometry" />
+        </mxCell>
+        <mxCell id="mpio_f5" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#F5F9FF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#102A43;" value="&lt;b&gt;IDX&lt;/b&gt;  subregion_pdet : Object {id: Int32 [1..16], nombre: String}" vertex="1">
+          <mxGeometry height="28" width="420" y="186" as="geometry" />
+        </mxCell>
+        <mxCell id="mpio_f6" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#102A43;" value="      area_oficial_km2 : Double" vertex="1">
+          <mxGeometry height="28" width="420" y="214" as="geometry" />
+        </mxCell>
+        <mxCell id="mpio_f7" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#EBF3FA;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#0B3B75;" value="&lt;b&gt;2dsphere&lt;/b&gt;  geometry : GeoJSON {type: MultiPolygon|Polygon, coordinates}" vertex="1">
+          <mxGeometry height="32" width="420" y="242" as="geometry" />
+        </mxCell>
+        <mxCell id="mpio_f8" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#102A43;" value="      bbox : Array&lt;Double&gt; [minLon, minLat, maxLon, maxLat]" vertex="1">
+          <mxGeometry height="28" width="420" y="274" as="geometry" />
+        </mxCell>
+        <mxCell id="mpio_f9" parent="col_mpio" style="text;strokeColor=#B8D0EB;fillColor=#F5F9FF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#102A43;" value="      metadata_mgn : Object {vigencia: 2025, crs: &quot;EPSG:4326&quot;, source_xlsx}" vertex="1">
+          <mxGeometry height="36" width="420" y="302" as="geometry" />
+        </mxCell>
+        <mxCell id="col_ms" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=46;fillColor=#D5E8D4;pcFill=1;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=#2D7632;fontColor=#1B3B1E;strokeWidth=2;rounded=1;arcSize=4;" value="&lt;b&gt;«Collection»&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;buildings_microsoft&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="310" width="430" x="990" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="ms_f1" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#F4FAF4;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#1B3B1E;" value="&lt;b&gt;PK&lt;/b&gt;  _id : ObjectId" vertex="1">
+          <mxGeometry height="28" width="430" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="ms_f2" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#1B3B1E;" value="&lt;b&gt;IDX&lt;/b&gt;  quadkey : String  &lt;i&gt;[Bing Maps Tile QuadKey]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="ms_f3" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#F4FAF4;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#1B3B1E;" value="&lt;b&gt;FK&lt;/b&gt;  cod_dane_mpio : String (5)  &lt;i&gt;[Ref lógica → municipalities_pdet]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="ms_f4" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#1B3B1E;" value="      dataset_source : String  &lt;i&gt;[Constante: &quot;microsoft_buildings&quot;]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ms_f5" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#E6F4E6;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#145218;" value="&lt;b&gt;2dsphere&lt;/b&gt;  geometry : GeoJSON {type: Polygon, coordinates}" vertex="1">
+          <mxGeometry height="32" width="430" y="158" as="geometry" />
+        </mxCell>
+        <mxCell id="ms_f6" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#E6F4E6;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#145218;" value="&lt;b&gt;2dsphere&lt;/b&gt;  centroid : GeoJSON {type: Point, coordinates: [lon, lat]}" vertex="1">
+          <mxGeometry height="28" width="430" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="ms_f7" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#F4FAF4;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#1B3B1E;" value="      rooftop_area_m2 : Double  &lt;i&gt;[Área calculada EPSG:9377]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="218" as="geometry" />
+        </mxCell>
+        <mxCell id="ms_f8" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#1B3B1E;" value="      height_m : Double (Nullable)  &lt;i&gt;[Altura estimada si disponible]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="ms_f9" parent="col_ms" style="text;strokeColor=#B7D7B5;fillColor=#F4FAF4;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#1B3B1E;" value="      capture_metadata : Object {imagery_dates, license: &quot;ODbL&quot;, batch_id}" vertex="1">
+          <mxGeometry height="36" width="430" y="274" as="geometry" />
+        </mxCell>
+        <mxCell id="col_gg" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=46;fillColor=#FFF2CC;pcFill=1;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=#B78103;fontColor=#4A3500;strokeWidth=2;rounded=1;arcSize=4;" value="&lt;b&gt;«Collection»&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;buildings_google&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="338" width="430" x="990" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f1" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFDF5;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="&lt;b&gt;PK&lt;/b&gt;  _id : ObjectId" vertex="1">
+          <mxGeometry height="28" width="430" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f2" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="&lt;b&gt;UK&lt;/b&gt;  full_plus_code : String  &lt;i&gt;[Open Location Code identificador]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f3" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFDF5;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="&lt;b&gt;FK&lt;/b&gt;  cod_dane_mpio : String (5)  &lt;i&gt;[Ref lógica → municipalities_pdet]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f4" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="      dataset_source : String  &lt;i&gt;[Constante: &quot;google_open_buildings_v3&quot;]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f5" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFF6D6;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#7A4F00;" value="&lt;b&gt;2dsphere&lt;/b&gt;  geometry : GeoJSON {type: Polygon, coordinates}" vertex="1">
+          <mxGeometry height="32" width="430" y="158" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f6" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFF6D6;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#7A4F00;" value="&lt;b&gt;2dsphere&lt;/b&gt;  centroid : GeoJSON {type: Point, coordinates: [lon, lat]}" vertex="1">
+          <mxGeometry height="28" width="430" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f7" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFDF5;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="      area_in_meters : Double  &lt;i&gt;[Área original reportada por Google m²]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="218" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f8" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="      rooftop_area_m2 : Double  &lt;i&gt;[Área homologada EPSG:9377 m²]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f9" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFDF5;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="&lt;b&gt;IDX&lt;/b&gt;  confidence : Double [0.65 – 1.0]  &lt;i&gt;[Puntaje confianza IA]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="430" y="274" as="geometry" />
+        </mxCell>
+        <mxCell id="gg_f10" parent="col_gg" style="text;strokeColor=#E6D099;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A3500;" value="      capture_metadata : Object {s2_token, version: &quot;v3&quot;, license: &quot;CC-BY-4.0&quot;}" vertex="1">
+          <mxGeometry height="36" width="430" y="302" as="geometry" />
+        </mxCell>
+        <mxCell id="col_agg" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=46;fillColor=#E1D5E7;pcFill=1;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=#6C3483;fontColor=#2E1538;strokeWidth=2;rounded=1;arcSize=4;" value="&lt;b&gt;«Collection (Materialized Aggregation View)»&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;solar_aggregations&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="318" width="440" x="40" y="705" as="geometry" />
+        </mxCell>
+        <mxCell id="agg_f1" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FAF7FC;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="&lt;b&gt;PK&lt;/b&gt;  _id : ObjectId" vertex="1">
+          <mxGeometry height="28" width="440" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="agg_f2" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="&lt;b&gt;FK, UK&lt;/b&gt;  cod_dane_mpio : String (5)  &lt;i&gt;[Ref 1:1 → municipalities_pdet]&lt;/i&gt;" vertex="1">
+          <mxGeometry height="28" width="440" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="agg_f3" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FAF7FC;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      municipio : String  |  departamento : String  |  subregion_pdet : Object" vertex="1">
+          <mxGeometry height="28" width="440" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="agg_f4" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      metrics_microsoft : Object {building_count, total_area_m2, total_area_ha, avg_area_m2, median_area_m2}" vertex="1">
+          <mxGeometry height="32" width="440" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="agg_f5" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FAF7FC;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      metrics_google : Object {building_count, total_area_m2, total_area_ha, avg_area_m2, avg_confidence}" vertex="1">
+          <mxGeometry height="32" width="440" y="162" as="geometry" />
+        </mxCell>
+        <mxCell id="agg_f6" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      comparison_metrics : Object {delta_count, delta_area_m2, delta_area_pct, rooftop_density_pct}" vertex="1">
+          <mxGeometry height="32" width="440" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="agg_f7" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FAF7FC;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      solar_potential : Object {usable_roof_m2, est_capacity_kwp, priority_rank}" vertex="1">
+          <mxGeometry height="32" width="440" y="226" as="geometry" />
+        </mxCell>
+        <mxCell id="agg_f8" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#2E1538;" value="      computed_at : ISODate  |  pipeline_version : String" vertex="1">
+          <mxGeometry height="28" width="440" y="258" as="geometry" />
+        </mxCell>
+        <mxCell id="agg_f9" parent="col_agg" style="text;strokeColor=#CBB5D6;fillColor=#F3EAF7;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;fontColor=#4A1C60;" value="&lt;b&gt;IDX&lt;/b&gt;  { &quot;solar_potential.priority_rank&quot;: 1, &quot;subregion_pdet.id&quot;: 1 }" vertex="1">
+          <mxGeometry height="32" width="440" y="286" as="geometry" />
+        </mxCell>
+        <mxCell id="spatial_hub" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FCE4D6;strokeColor=#C55A11;fontColor=#5C2604;strokeWidth=2;fontSize=12;" value="&lt;b&gt;Cruce Espacial&lt;br&gt;Geoespacial NoSQL&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;&lt;b&gt;$geoIntersects&lt;/b&gt; / &lt;b&gt;$geoWithin&lt;/b&gt;&lt;br&gt;Índice: &lt;b&gt;2dsphere (WGS84)&lt;/b&gt;&lt;br&gt;Área Métrica: &lt;b&gt;EPSG:9377 (m²)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="175" width="310" x="540" y="181.5" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_xlsx_mpio" edge="1" parent="1" source="col_xlsx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#0043CE;strokeWidth=2;startArrow=ERmandOne;startFill=0;endArrow=ERmandOne;endFill=0;fontSize=11;fontStyle=1;fontColor=#001D6C;labelBackgroundColor=#FFFFFF;" target="col_mpio" value="1 : 1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_mpio_hub" edge="1" parent="1" source="col_mpio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#2B579A;strokeWidth=2;startArrow=ERmandOne;startFill=0;endArrow=none;endFill=0;fontSize=11;fontStyle=1;fontColor=#102A43;labelBackgroundColor=#FFFFFF;" target="spatial_hub" value="1 (170 Mpios)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="515" y="400" />
+              <mxPoint x="515" y="269" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_hub_ms" edge="1" parent="1" source="spatial_hub" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#2D7632;strokeWidth=2;startArrow=none;startFill=0;endArrow=ERzeroToMany;endFill=0;fontSize=11;fontStyle=1;fontColor=#1B3B1E;labelBackgroundColor=#FFFFFF;" target="ms_f5" value="0..N huellas">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="269" />
+              <mxPoint x="880" y="269" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_hub_gg" edge="1" parent="1" source="spatial_hub" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#B78103;strokeWidth=2;startArrow=none;startFill=0;endArrow=ERzeroToMany;endFill=0;fontSize=11;fontStyle=1;fontColor=#4A3500;labelBackgroundColor=#FFFFFF;" target="gg_f5" value="0..N huellas">
+          <mxGeometry relative="1" x="0.25" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="695" y="714" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_mpio_agg" edge="1" parent="1" source="col_mpio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.477;entryY=0;entryDx=0;entryDy=0;strokeColor=#6C3483;strokeWidth=2;startArrow=ERmandOne;startFill=0;endArrow=ERmandOne;endFill=0;fontSize=11;fontStyle=1;fontColor=#4A1C60;labelBackgroundColor=#FFFFFF;" target="col_agg" value="1 : 1  (cod_dane_mpio)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_ms_agg" edge="1" parent="1" source="ms_f7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#2D7632;strokeWidth=1.8;dashed=1;dashPattern=6 4;startArrow=ERzeroToMany;startFill=0;endArrow=ERmandOne;endFill=0;fontSize=11;fontColor=#1B3B1E;labelBackgroundColor=#FFFFFF;" target="agg_f4" value="$group por cod_dane_mpio&#xa;(N : 1 → metrics_microsoft)">
+          <mxGeometry relative="1" x="0.4971" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="870" y="327" />
+              <mxPoint x="870" y="851" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_gg_agg" edge="1" parent="1" source="gg_f8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#B78103;strokeWidth=1.8;dashed=1;dashPattern=6 4;startArrow=ERzeroToMany;startFill=0;endArrow=ERmandOne;endFill=0;fontSize=11;fontColor=#4A3500;labelBackgroundColor=#FFFFFF;" target="agg_f5" value="$group por cod_dane_mpio&#xa;(N : 1 → metrics_google)">
+          <mxGeometry relative="1" x="0.1128" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="900" y="800" />
+              <mxPoint x="900" y="910" />
+              <mxPoint x="480" y="910" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend_box" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#6C757D;fontColor=#212529;align=center;verticalAlign=top;spacing=8;fontSize=12;" value="&lt;b&gt;Convenciones del Esquema NoSQL&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;div style=&quot;text-align:left; font-size:11px; line-height:1.4;&quot;&gt;• &lt;b&gt;PK / UK&lt;/b&gt;: Llave primaria (&lt;i&gt;_id&lt;/i&gt;) e índice único (&lt;i&gt;cod_dane_mpio&lt;/i&gt;)&lt;br&gt;• &lt;b&gt;FK&lt;/b&gt;: Referencia lógica entre colecciones (&lt;i&gt;cod_dane_mpio&lt;/i&gt;)&lt;br&gt;• &lt;b&gt;2dsphere&lt;/b&gt;: Índice espacial MongoDB sobre objetos &lt;i&gt;GeoJSON&lt;/i&gt;&lt;br&gt;• &lt;b&gt;Object {...}&lt;/b&gt;: Subdocumento BSON embebido (desnormalizado)&lt;br&gt;• &lt;b&gt;zfill(5)&lt;/b&gt;: Normalización DANE (ej. &lt;i&gt;5045 → &quot;05045&quot;&lt;/i&gt;) para cruce MGN&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="390" x="1020" y="903" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

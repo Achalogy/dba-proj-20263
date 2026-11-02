@@ -14,41 +14,29 @@ jobs:
         with:
           fetch-depth: 0
 
-      #       - name: Convert Drawio diagrams to PNG
-      #         uses: rlespinasse/drawio-export-action@v2
-      #         with:
-      #           action-mode: all
-      #           path: docs/diagrams/
-      #           output: ""
-      #           format: png
-      #           transparent: false
-      #           remove-page-suffix: true
-      #           quality: 100
-      #           scale: 2
-      #
-      #       - name: Convert Component Drawio diagrams to PNG
-      #         uses: rlespinasse/drawio-export-action@v2
-      #         with:
-      #           action-mode: all
-      #           path: docs/diagrams/components/
-      #           output: ""
-      #           format: png
-      #           transparent: false
-      #           remove-page-suffix: true
-      #           quality: 100
-      #           scale: 2
-      #
-      #       - name: Commit and push exported diagrams
-      #         if: github.ref_type == 'branch'
-      #         run: |
-      #           git config --global user.name "github-actions[bot]"
-      #           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #           git add docs/diagrams/
-      #           if ! git diff --staged --quiet; then
-      #             git commit -m "chore(docs): update exported diagram images [skip ci]"
-      #             git pull origin ${{ github.ref_name }} --rebase
-      #             git push origin HEAD:${{ github.ref }}
-      #           fi
+      - name: Convert Drawio diagrams to PNG
+        uses: rlespinasse/drawio-export-action@v2
+        with:
+          action-mode: all
+          path: diagrams/
+          output: ""
+          format: png
+          transparent: false
+          remove-page-suffix: true
+          quality: 100
+          scale: 2
+
+      - name: Commit and push exported diagrams
+        if: github.ref_type == 'branch'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add diagrams/
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(docs): update exported diagram images [skip ci]"
+            git pull origin ${{ github.ref_name }} --rebase
+            git push origin HEAD:${{ github.ref }}
+          fi
 
       - name: Setup Typst
         uses: typst-community/setup-typst@v3

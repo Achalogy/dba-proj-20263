@@ -11,12 +11,15 @@
     FINAL PROJECT: \
     Reproducible Geospatial Analysis Workflow (Rooftop Count and Area Estimation)
   ]
+  #text(size: 10pt)[
+    https://github.com/Achalogy/dba-proj-20263
+  ]
 
   #v(1.5cm)
 
   Juliana Sofía Novoa Solano \
   Juan Santiago Saavedra Holguin \
-  Juan Garzón Tinjaca \
+  Juan Esteban Garzón Tinjaca \
   Miguel Francisco Vargas Contreras
 
   #v(1cm)
