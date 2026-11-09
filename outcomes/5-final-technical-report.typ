@@ -11,6 +11,7 @@
     FINAL PROJECT: \
     Final Technical Report
   ]
+  #v(0.25cm)
   #text(size: 10pt)[
     https://github.com/Achalogy/dba-proj-20263
   ]

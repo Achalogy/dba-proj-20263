@@ -11,6 +11,7 @@
     FINAL PROJECT: \
     Reproducible Geospatial Analysis Workflow (Rooftop Count and Area Estimation)
   ]
+  #v(0.25cm)
   #text(size: 10pt)[
     https://github.com/Achalogy/dba-proj-20263
   ]
