@@ -10,9 +10,9 @@ Flujo:
   6. Valida en la base: conteo = 170 y consulta $geoIntersects de prueba.
 
 Uso:
-    python scripts/prepare_pdet.py --mgn data/raw/MGN.gdb
-    python scripts/prepare_pdet.py --mgn data/raw/MGN.gdb --dry-run   # no toca MongoDB
-    python scripts/prepare_pdet.py --mgn data/raw/MGN.gdb --export data/processed/municipalities_pdet.ndjson
+    python scripts/Prepare_pdet.py --mgn data/MGN.gdb
+    python scripts/Prepare_pdet.py --mgn dataM/GN.gdb --dry-run   # no toca MongoDB
+    python scripts/Prepare_pdet.py --mgn data/MGN.gdb --export data/processed/municipalities_pdet.ndjson
 
 Requiere Python >= 3.10 y: geopandas, pyogrio, shapely>=2, pandas, openpyxl, pymongo.
 """
