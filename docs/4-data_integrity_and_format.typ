@@ -20,7 +20,7 @@ Esta etapa toma los datos ya verificados (ver la sección de Adquisición y Veri
       [Librerías], [`geopandas`, `pyogrio`, `shapely` (2.0 o superior), `pandas`, `openpyxl` y `pymongo`.],
       [Por qué `pymongo`], [El script importa `bson` (que viene con `pymongo`) para medir el tamaño de cada documento. Hace falta aunque no se use MongoDB.],
       [Excel de municipios], [`data/MunicipiosPDET.xlsx`, con dos hojas (ver abajo).],
-      [Marco Geoestadístico], [DANE, MGN2025, descargado y descomprimido en `data/raw/` (ver la sección de adquisición).],
+      [Marco Geoestadístico], [DANE, MGN2025, descargado y descomprimido en `data/` (ver la sección de adquisición).],
       [MongoDB], [No se necesita en este commit.],
     )
   ],
