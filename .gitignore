@@ -1,7 +1,24 @@
 *.pdf
 .DS_Store
+__MACOSX
 *.dtmp
 skills/
 *.bkp
 data/raw/
 .venv/
+
+# Archivos pesados geoespaciales y datos locales
+data/*.shp
+data/*.shx
+data/*.dbf
+data/*.prj
+data/*.cpg
+data/*.ndjson
+data/*.shp.xml
+data/*.sbn
+data/*.sbx
+data/*.sr.lock
+
+# Copias o similar
+
+data/*.zip
