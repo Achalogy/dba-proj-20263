@@ -5,3 +5,11 @@ skills/
 *.bkp
 data/raw/
 .venv/
+
+# Archivos pesados geoespaciales y datos locales
+data/*.shp
+data/*.shx
+data/*.dbf
+data/*.prj
+data/*.cpg
+data/*.ndjson
