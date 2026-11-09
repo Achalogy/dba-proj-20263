@@ -4,7 +4,7 @@
 
 Esta etapa toma los datos ya verificados (ver la sección de Adquisición y Verificación de Datos) y los deja en el formato que pide la base de datos. El script `Prepare_pdet.py` lee el Excel de municipios PDET y la capa municipal del MGN del DANE, cruza ambos por código, reproyecta las geometrías, valida el resultado y construye un documento por municipio siguiendo el esquema `municipalities_pdet` del diagrama E-R.
 
-*Estado en este commit.* La rama solo genera los documentos y los exporta a un archivo en formato NDJSON (un documento JSON por línea). *Todavía no se conecta a MongoDB*: el código de carga, los índices y las pruebas dentro de la base existen en el diseño, pero están deshabilitados en esta versión. Por eso el script se ejecuta siempre con la opción `--dry-run`. Los índices `2dsphere` y la consulta `$geoIntersects` quedan pendientes para la siguiente etapa.
+*Alcance operativo.* Esta etapa se enfoca en la estructuración, validación geométrica y exportación de los documentos a formato NDJSON (un documento JSON por línea) antes de su ingesta en base de datos. Por ello, la verificación de integridad puede ejecutarse de manera aislada con la opción `--dry-run`. La conexión activa, los índices `2dsphere` y la validación con consultas `$geoIntersects` se abordan y consolidan de manera exhaustiva en la siguiente sección del informe.
 
 == Requisitos para repetir el trabajo
 
@@ -18,10 +18,12 @@ Esta etapa toma los datos ya verificados (ver la sección de Adquisición y Veri
       [*Requisito*], [*Detalle*],
       [Python], [Versión 3.10 o superior (el código usa la sintaxis `str | None`).],
       [Librerías], [`geopandas`, `pyogrio`, `shapely` (2.0 o superior), `pandas`, `openpyxl` y `pymongo`.],
-      [Por qué `pymongo`], [El script importa `bson` (que viene con `pymongo`) para medir el tamaño de cada documento. Hace falta aunque no se use MongoDB.],
+      [Por qué `pymongo`],
+      [El script importa `bson` (que viene con `pymongo`) para medir el tamaño de cada documento. Hace falta aunque no se use MongoDB.],
+
       [Excel de municipios], [`data/MunicipiosPDET.xlsx`, con dos hojas (ver abajo).],
       [Marco Geoestadístico], [DANE, MGN2025, descargado y descomprimido en `data/` (ver la sección de adquisición).],
-      [MongoDB], [No se necesita en este commit.],
+      [MongoDB], [Requerido para la fase de persistencia (ver siguiente sección).],
     )
   ],
   caption: [Requisitos para ejecutar el script.],
@@ -76,7 +78,7 @@ La carpeta `data/raw/` pesa varios gigabytes y no se sube a GitHub. La carpeta `
 
 Los comandos se escriben desde la raíz del repositorio, para que las rutas relativas funcionen.
 
-*Comando recomendado en este commit:*
+*Comando para validación y exportación en modo autónomo:*
 
 ```powershell
 python scripts/prepare_pdet.py `
@@ -97,17 +99,20 @@ En PowerShell, el acento grave al final de cada línea permite partir el comando
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Argumento*], [*¿Obligatorio?*], [*Qué hace*],
       [`--mgn`], [Sí], [Ruta al shapefile (`.shp`), a la geodatabase (`.gdb`) o al GeoPackage del MGN.],
-      [`--layer`], [No], [Nombre de la capa municipal. Solo hace falta con `.gdb` o `.gpkg`; con un `.shp` se ignora. Si no se indica, se busca una capa cuyo nombre contenga `MPIO`.],
+      [`--layer`],
+      [No],
+      [Nombre de la capa municipal. Solo hace falta con `.gdb` o `.gpkg`; con un `.shp` se ignora. Si no se indica, se busca una capa cuyo nombre contenga `MPIO`.],
+
       [`--xlsx`], [No], [Ruta al Excel de municipios PDET. Por defecto es `data/MunicipiosPDET.xlsx`.],
       [`--export`], [No], [Ruta del archivo `.ndjson` de salida. Si no se indica, no se escribe ningún archivo.],
-      [`--dry-run`], [No, pero necesario hoy], [Valida y exporta sin tocar MongoDB. En este commit debe usarse siempre.],
-      [`--uri`, `--db`], [No], [Conexión y nombre de la base de MongoDB. *Deshabilitados en este commit*; se activan con la carga.],
+      [`--dry-run`], [No], [Valida y exporta sin tocar MongoDB. Ideal para pruebas de integridad previas a la ingesta.],
+      [`--uri`, `--db`],
+      [No],
+      [Conexión y nombre de la base de MongoDB. Por defecto `mongodb://localhost:27017` y `upme_pdet`.],
     )
   ],
   caption: [Argumentos de `prepare_pdet.py`.],
 )
-
-*Importante.* Si el script se ejecuta sin `--dry-run` en esta versión, genera los documentos y luego falla con un error de tipo `AttributeError`, porque el bloque de conexión a MongoDB está deshabilitado. No se pierde ni se daña ningún dato, pero tampoco se carga nada.
 
 == Qué hace el script, paso a paso
 
@@ -122,7 +127,7 @@ En PowerShell, el acento grave al final de cada línea permite partir el comando
 
 Ante cualquier problema de integridad el script termina con un mensaje `[ERROR]` y un código de salida distinto de cero, en lugar de continuar con datos dudosos.
 
-== Resultado obtenido en este commit
+== Resultado obtenido en esta etapa
 
 Con los datos reales (MGN2025 y `MunicipiosPDET.xlsx`), el script terminó sin errores y mostró:
 
@@ -133,7 +138,7 @@ Documentos listos: 170 | subregiones: 16
 #figure(
   text(size: 10.5pt)[
     #table(
-      columns: (2.2fr, 1.2fr, 2.4fr),
+      columns: (2.2fr, 1.2fr, 2.6fr),
       align: (left, center, left),
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
@@ -141,7 +146,10 @@ Documentos listos: 170 | subregiones: 16
       [Municipios PDET encontrados en el MGN], [170 de 170], [El script se detiene si falta alguno.],
       [Departamento del Excel igual al del MGN], [170 de 170], [El script se detiene si hay diferencias.],
       [Subregiones identificadas], [16], [Mensaje final del script.],
-      [Geometrías válidas, Polygon o MultiPolygon, en rango lon/lat], [170 de 170], [El script se detiene si alguna falla.],
+      [Geometrías válidas, Polygon o MultiPolygon, en rango lon/lat],
+      [170 de 170],
+      [El script se detiene si alguna falla.],
+
       [Documentos de más de 8 MB], [Ninguno], [No apareció el aviso de documentos grandes.],
       [Documentos exportados al NDJSON], [170], [Conteo de líneas del archivo.],
       [Nombres con tilde], [Correctos], [Se leen bien `PIENDAMÓ - TUNÍA`, `PUERTO LEGUÍZAMO` y `VISTAHERMOSA`.],
@@ -190,7 +198,9 @@ Documentos listos: 170 | subregiones: 16
       [`area_oficial_km2`], [Double], [Área oficial publicada por el DANE.],
       [`geometry`], [GeoJSON], [Polígono o multipolígono en EPSG:4326.],
       [`bbox`], [Arreglo de 4], [Caja envolvente: mínima longitud, mínima latitud, máxima longitud, máxima latitud.],
-      [`metadata_mgn`], [Objeto], [Vigencia, sistema de coordenadas, archivo de origen, nombre en el Excel y fecha de generación.],
+      [`metadata_mgn`],
+      [Objeto],
+      [Vigencia, sistema de coordenadas, archivo de origen, nombre en el Excel y fecha de generación.],
     )
   ],
   caption: [Campos de cada documento de `municipalities_pdet`.],
@@ -198,14 +208,13 @@ Documentos listos: 170 | subregiones: 16
 
 *Reproducibilidad.* Todos los campos salen igual en cada ejecución, excepto `metadata_mgn.cargado_en`, que guarda la fecha y hora (UTC) de generación. Por eso dos archivos exportados en momentos distintos no serán idénticos byte a byte, aunque los datos sean los mismos.
 
-== Lo que aún no hace esta rama
+== Transición a la Integración NoSQL
 
-- *No se conecta a MongoDB.* El código de carga está deshabilitado en este commit.
-- *No crea índices.* El índice único sobre `cod_dane_mpio`, el `2dsphere` sobre `geometry` y el de `subregion_pdet.id` quedan pendientes.
-- *No prueba el `2dsphere`.* Una geometría válida para Shapely puede ser rechazada por el índice esférico de MongoDB. Esa comprobación solo es posible al crear el índice en la base.
-- *No carga el catálogo* `catalogo_municipios_pdet` del diagrama E-R.
-- *No valida dentro de la base*: falta el conteo de 170 documentos y la consulta `$geoIntersects` con un punto de cada municipio.
+Una vez garantizada la integridad topológica, la conformidad de tamaños en BSON y la estandarización de atributos de los 170 municipios PDET, los datos quedan listos para su persistencia en el motor de base de datos NoSQL:
 
-== Siguiente paso
+- *Conexión activa a MongoDB:* Despliegue del servicio mediante contenedores Docker y autenticación administrativa.
+- *Carga e idempotencia:* Ingesta masiva en las colecciones `municipalities_pdet` y `catalogo_municipios_pdet`.
+- *Indexación espacial esférica:* Creación y comprobación de los índices `2dsphere` sobre `geometry`, junto con los índices únicos B-Tree.
+- *Validación espacial in situ:* Ejecución de pruebas de intersección esférica `$geoIntersects` con el punto interior (`point_on_surface`) de cada municipio.
 
-Reactivar el bloque de MongoDB: restaurar los argumentos `--uri` (por defecto `mongodb://localhost:27017`) y `--db` (por defecto `upme_pdet`), iniciar el servicio local de MongoDB, ejecutar el script sin `--dry-run`, y registrar en esta sección los índices creados y el resultado de las pruebas de validación. Con eso queda cubierto el requisito de evidencia de índices espaciales de la Fase 2.
+Las anteriores actividades se consolidan y evidencian de manera exhaustiva en la siguiente sección del informe (*Integración Geoespacial en NoSQL*).

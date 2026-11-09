@@ -18,18 +18,18 @@ Para asegurar la reproducibilidad del entorno de desarrollo y evitar discrepanci
 
 #figure(
   text(size: 9.5pt)[
-```yaml
-services:
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: acha
-      MONGO_INITDB_ROOT_PASSWORD: acha
-    ports:
-      - "27017:27017"
-```
+    ```yaml
+    services:
+      mongodb:
+        image: mongo:latest
+        container_name: mongodb
+        restart: unless-stopped
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: acha
+          MONGO_INITDB_ROOT_PASSWORD: acha
+        ports:
+          - "27017:27017"
+    ```
   ],
   caption: [Definición del servicio MongoDB en `compose.yml`.],
 )
@@ -93,19 +93,38 @@ Para garantizar que el flujo de trabajo sea estrictamente reproducible y no gene
 En bases de datos documentales, la correcta selección de índices resulta crítica para garantizar tiempos de respuesta subsegundo en operaciones geoespaciales sobre grandes volúmenes de datos. En particular, la posterior integración con las huellas de edificaciones (que contienen millones de polígonos) exigirá resolver consultas de pertenencia espacial de forma óptima.
 
 #figure(
-  text(size: 10.5pt)[
+  text(size: 9.5pt)[
     #table(
-      columns: (1.5fr, 1.4fr, 1fr, 1fr, 2.1fr),
+      columns: (auto, auto, auto, auto, auto),
       align: (left, left, center, right, left),
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Colección*], [*Nombre del Índice*], [*Tipo*], [*Tamaño*], [*Propósito y Comportamiento*],
       [`municipalities_pdet`], [`_id_`], [B-Tree], [20 KB], [Identificador único nativo del documento.],
-      [`municipalities_pdet`], [`cod_dane_mpio_1`], [B-Tree (Único)], [20 KB], [Garantiza unicidad de los códigos DANE de 5 dígitos y acelera cruces por llave primaria de negocio.],
-      [`municipalities_pdet`], [`geometry_2dsphere`], [2dsphere (v4)], [64 KB], [Índice geoespacial esférico sobre WGS84 para operadores `$geoIntersects`, `$geoWithin` y `$near`.],
-      [`municipalities_pdet`], [`subregion_pdet.id_1`], [B-Tree], [20 KB], [Indexación de campo anidado para filtrado directo por subregión PDET (1 a 16).],
+      [`municipalities_pdet`],
+      [`cod_dane_mpio_1`],
+      [B-Tree (Único)],
+      [20 KB],
+      [Garantiza unicidad de los códigos DANE de 5 dígitos y acelera cruces por llave primaria de negocio.],
+
+      [`municipalities_pdet`],
+      [`geometry_2dsphere`],
+      [2dsphere (v4)],
+      [64 KB],
+      [Índice geoespacial esférico sobre WGS84 para operadores `$geoIntersects`, `$geoWithin` y `$near`.],
+
+      [`municipalities_pdet`],
+      [`subregion_pdet.id_1`],
+      [B-Tree],
+      [20 KB],
+      [Indexación de campo anidado para filtrado directo por subregión PDET (1 a 16).],
+
       [`catalogo_municipios_pdet`], [`_id_`], [B-Tree], [20 KB], [Identificador único nativo del catálogo.],
-      [`catalogo_municipios_pdet`], [`cod_dane_mpio_1`], [B-Tree (Único)], [20 KB], [Unicidad e indexación rápida para la entidad de catálogo PDET.],
+      [`catalogo_municipios_pdet`],
+      [`cod_dane_mpio_1`],
+      [B-Tree (Único)],
+      [20 KB],
+      [Unicidad e indexación rápida para la entidad de catálogo PDET.],
     )
   ],
   caption: [Índices creados y verificados en la base de datos MongoDB `upme_pdet`.],
@@ -155,9 +174,18 @@ for _, r in m.iterrows():
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Métrica de Evaluación*], [*Resultado*], [*Observación / Diagnóstico*],
       [Puntos interiores evaluados], [170 / 170], [Se probó un punto interior por cada municipio PDET.],
-      [Coincidencias exactas (`$geoIntersects`)], [170 / 170], [El municipio retornado coincidió al 100 % con el código esperado.],
-      [Falsos negativos o fallos de intersección], [0 / 170], [Ningún punto interior cayó en vacío o fuera de su polígono.],
-      [Confusiones o colisiones espaciales], [0 / 170], [Ningún punto interior intersectó erróneamente un municipio vecino.],
+      [Coincidencias exactas (`$geoIntersects`)],
+      [170 / 170],
+      [El municipio retornado coincidió al 100 % con el código esperado.],
+
+      [Falsos negativos o fallos de intersección],
+      [0 / 170],
+      [Ningún punto interior cayó en vacío o fuera de su polígono.],
+
+      [Confusiones o colisiones espaciales],
+      [0 / 170],
+      [Ningún punto interior intersectó erróneamente un municipio vecino.],
+
       [Tasa de efectividad de la prueba], [100.0 %], [Validación espacial superada de forma íntegra.],
     )
   ],
