@@ -7,7 +7,7 @@ Esta sección documenta la persistencia real y la integración geoespacial de lo
 Tras haber verificado la calidad topológica de los datos de origen (MGN2025 del DANE) y haber estructurado y validado el modelo de documentos en formato GeoJSON, en esta etapa se ejecutó el proceso de ingestión directa sobre la base de datos sin restricciones de simulación (`--dry-run`). Los objetivos cumplidos en esta fase son:
 
 + *Despliegue del entorno NoSQL:* Levantamiento y configuración de una instancia local aislada de MongoDB mediante contenedores Docker.
-+ *Carga real e idempotente de datos:* Ingestión de los 170 municipios en la colección `municipalities_pdet` y de los metadatos tabulares en `catalogo_municipios_pdet` a través del script `prepare-pdet.py`.
++ *Carga real e idempotente de datos:* Ingestión de los 170 municipios en la colección `municipalities_pdet` y de los metadatos tabulares en `catalogo_municipios_pdet` a través del script `prepare-pdet.py` ejecutado con `uv`.
 + *Creación y verificación de índices:* Construcción del índice espacial esférico `2dsphere` sobre el campo `geometry`, junto con los índices B-Tree únicos y de partición sobre `cod_dane_mpio` y `subregion_pdet.id`.
 + *Validación espacial exhaustiva de punto interior:* Comprobación de integridad topológica y cobertura sobre la esfera mediante consultas `$geoIntersects` generadas a partir del punto interior (`point_on_surface`) de cada uno de los 170 municipios, alcanzando una tasa de éxito de 170/170 aciertos (100 %).
 + *Auditoría de planes de ejecución (`explain`):* Demostración de que las búsquedas espaciales utilizan eficazmente el índice `geometry_2dsphere` mediante escaneos de índice (`IXSCAN`), descartando escaneos lineales de colección (`COLLSCAN`).
@@ -38,7 +38,7 @@ Para asegurar la reproducibilidad del entorno de desarrollo y evitar discrepanci
 
 Desde la raíz del repositorio o dentro de la carpeta del módulo, el servicio se inicia en segundo plano con el siguiente comando:
 
-```powershell
+```bash
 docker compose -f src/2-mongo_container_test/compose.yml up -d
 ```
 
@@ -55,12 +55,23 @@ La cadena de conexión (URI) utilizada para autenticar al usuario administrador 
 mongodb://acha:acha@localhost:27017/?authSource=admin
 ```
 
-== Ejecución de la Carga Real (`prepare-pdet.py`)
+== Ejecución de la Carga Real (`prepare-pdet.py`) con `uv`
 
-Con la base de datos en ejecución y autenticada, se procedió a invocar el script de preparación y carga `prepare-pdet.py` omitiendo la bandera `--dry-run`, habilitando así la escritura activa sobre MongoDB y exportando simultáneamente el archivo consolidado en formato NDJSON para respaldo local.
+Con la base de datos en ejecución y autenticada, se procedió a invocar el script de preparación y carga `prepare-pdet.py` mediante el gestor de entornos `uv`, omitiendo la bandera `--dry-run`. De este modo, se habilitó la escritura activa sobre MongoDB y se exportó simultáneamente el archivo consolidado en formato NDJSON para respaldo local:
+
+```bash
+uv run src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py \
+  --mgn data/MGN_ADM_MPIO_GRAFICO.shp \
+  --xlsx data/MunicipiosPDET.xlsx \
+  --export data/processed/municipalities_pdet.ndjson \
+  --uri "mongodb://acha:acha@localhost:27017/?authSource=admin" \
+  --db upme_pdet
+```
+
+En entornos Windows PowerShell, el comando se expresa con el carácter de continuación de línea (\`):
 
 ```powershell
-python src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py `
+uv run src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py `
   --mgn data/MGN_ADM_MPIO_GRAFICO.shp `
   --xlsx data/MunicipiosPDET.xlsx `
   --export data/processed/municipalities_pdet.ndjson `
@@ -74,7 +85,7 @@ El script procesó las geometrías de los 1.122 municipios del shapefile origina
 
 ```text
 Documentos listos: 170 | subregiones: 16
-NDJSON exportado en data\processed\municipalities_pdet.ndjson
+NDJSON exportado en data/processed/municipalities_pdet.ndjson
 OK: 170 municipios en upme_pdet.municipalities_pdet, indices: ['_id_', 'cod_dane_mpio_1', 'geometry_2dsphere', 'subregion_pdet.id_1']
 Prueba $geoIntersects (punto interior de cada municipio): 170/170 correctas.
 ```

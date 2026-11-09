@@ -15,7 +15,11 @@ El proyecto trabaja solo con los 170 municipios PDET. Para saber dónde queda ca
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Dato*], [*Detalle*],
       [Fuente], [DANE, Marco Geoestadístico Nacional, versión MGN2025 (todos los niveles geográficos).],
-      [Página de descarga], [#link("https://geoportal.dane.gov.co/servicios/descarga-y-metadatos/datos-geoestadisticos/?cod=111")[Geoportal del DANE, datos geoestadísticos]],
+      [Página de descarga],
+      [#link(
+        "https://geoportal.dane.gov.co/servicios/descarga-y-metadatos/datos-geoestadisticos/?cod=111",
+      )[Geoportal del DANE, datos geoestadísticos]],
+
       [Fecha de descarga], [7 de noviembre de 2026, 8:28 p. m.],
       [Tamaño del archivo ZIP], [3 310 468 KB (unos 3,2 GB).],
       [Forma de descarga], [Manual, desde el navegador, con el botón de descarga de la página.],
@@ -33,7 +37,13 @@ Como el archivo pesa varios gigabytes, *no se sube a GitHub*. Se guarda en la ca
 
 == Revisiones de calidad
 
-Antes de usar los datos se revisaron con un programa (`scripts/verify_mgn.py`). El programa solo lee los datos, no los modifica, y deja el resultado en `reports/mgn_verification.json`, así cualquiera puede repetir la revisión y obtener lo mismo.
+Antes de usar los datos se revisaron con el programa (`src/1-pdet_mgn/src/1_pdet_mgn/verify_mgn.py`), ejecutado de forma reproducible mediante el gestor `uv`:
+
+```bash
+uv run src/1-pdet_mgn/src/1_pdet_mgn/verify_mgn.py --mgn data/MGN_ADM_MPIO_GRAFICO.shp
+```
+
+El programa solo lee los datos, no los modifica, y deja el resultado en `reports/mgn_verification.json`, así cualquiera puede repetir la revisión y obtener exactamente el mismo diagnóstico.
 
 #figure(
   text(size: 10.5pt)[
@@ -49,7 +59,9 @@ Antes de usar los datos se revisaron con un programa (`scripts/verify_mgn.py`). 
       [Nombre del Excel igual al del MGN], [164 de 170], [Seis nombres se escriben distinto (ver más abajo).],
       [Geometrías vacías o sin datos], [0 de 170], [Todos los municipios tienen su mapa.],
       [Geometrías inválidas], [0 de 170], [Los dibujos no tienen errores, no hay que repararlos.],
-      [Área calculada igual al área oficial del DANE], [170 de 170], [Diferencia de 0,000 %, el mapa y el área oficial coinciden.],
+      [Área calculada igual al área oficial del DANE],
+      [170 de 170],
+      [Diferencia de 0,000 %, el mapa y el área oficial coinciden.],
     )
   ],
   caption: [Resultados de la revisión de calidad sobre los 170 municipios PDET.],
