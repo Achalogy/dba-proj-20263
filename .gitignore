@@ -3,3 +3,5 @@
 *.dtmp
 skills/
 *.bkp
+data/raw/
+.venv/

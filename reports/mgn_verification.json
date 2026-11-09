@@ -1,0 +1,75 @@
+{
+  "fecha": "2026-11-07T21:04:31",
+  "archivo_mgn": "data/raw/MGN2025_00_COLOMBIA/MGN_2025_COLOMBIA/ADMINISTRATIVO/MGN_ADM_MPIO_GRAFICO.shp",
+  "catalogo_pdet": {
+    "filas": 170,
+    "codigos_unicos": 170
+  },
+  "mgn": {
+    "capa": null,
+    "municipios_totales": 1122,
+    "codigos_unicos": 1122,
+    "codigos_repetidos": [],
+    "crs": "EPSG:4326",
+    "columnas_usadas": {
+      "municipio": "mpio_cdpmp",
+      "departamento": "dpto_ccdgo",
+      "nombre": "mpio_cnmbr",
+      "area": "mpio_narea"
+    }
+  },
+  "cruce": {
+    "pdet_encontrados_en_mgn": 170,
+    "pdet_que_faltan_en_mgn": []
+  },
+  "coherencia": {
+    "departamento_distinto": [],
+    "nombres_distintos": [
+      {
+        "cod": "19418",
+        "mgn": "LÓPEZ DE MICAY",
+        "xlsx": "LÓPEZ"
+      },
+      {
+        "cod": "19548",
+        "mgn": "PIENDAMÓ - TUNÍA",
+        "xlsx": "PIENDAMÓ"
+      },
+      {
+        "cod": "50711",
+        "mgn": "VISTAHERMOSA",
+        "xlsx": "VISTA HERMOSA"
+      },
+      {
+        "cod": "70523",
+        "mgn": "PALMITO",
+        "xlsx": "SAN ANTONIO DE PALMITO"
+      },
+      {
+        "cod": "70823",
+        "mgn": "SAN JOSÉ DE TOLUVIEJO",
+        "xlsx": "TOLÚ VIEJO"
+      },
+      {
+        "cod": "86573",
+        "mgn": "PUERTO LEGUÍZAMO",
+        "xlsx": "LEGUÍZAMO"
+      }
+    ]
+  },
+  "geometrias": {
+    "tipos": {
+      "Polygon": 168,
+      "MultiPolygon": 2
+    },
+    "nulas": 0,
+    "vacias": 0,
+    "invalidas": 0,
+    "codigos_invalidos": []
+  },
+  "area": {
+    "diferencia_relativa_mediana_pct": 0.0,
+    "diferencia_relativa_max_pct": 0.0,
+    "municipios_con_dif_mayor_5pct": 0
+  }
+}
