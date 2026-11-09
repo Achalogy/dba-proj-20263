@@ -1,6 +1,6 @@
 {
-  "fecha": "2026-11-07T21:04:31",
-  "archivo_mgn": "data/raw/MGN2025_00_COLOMBIA/MGN_2025_COLOMBIA/ADMINISTRATIVO/MGN_ADM_MPIO_GRAFICO.shp",
+  "fecha": "2026-11-08T22:18:19",
+  "archivo_mgn": "data/MGN_ADM_MPIO_GRAFICO.shp",
   "catalogo_pdet": {
     "filas": 170,
     "codigos_unicos": 170

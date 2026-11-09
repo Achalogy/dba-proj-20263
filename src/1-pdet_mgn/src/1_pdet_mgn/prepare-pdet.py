@@ -16,6 +16,7 @@ Uso:
 
 Requiere Python >= 3.10 y: geopandas, pyogrio, shapely>=2, pandas, openpyxl, pymongo.
 """
+
 import argparse
 import json
 import sys
@@ -81,13 +82,15 @@ def leer_catalogo(xlsx: str):
     c_d = pick(df.columns, ["Departamento"], "departamento")
     c_cm = pick(df.columns, ["Código DANE Municipio"], "codigo municipio")
     c_m = pick(df.columns, ["Municipio"], "municipio")
-    out = pd.DataFrame({
-        "subregion": df[c_sub].astype(str).str.strip(),
-        "cod_dane_dpto": df[c_cd].astype(int).astype(str).str.zfill(2),
-        "departamento": df[c_d].astype(str).str.strip(),
-        "cod_dane_mpio": df[c_cm].astype(int).astype(str).str.zfill(5),
-        "municipio_xlsx": df[c_m].astype(str).str.strip(),
-    })
+    out = pd.DataFrame(
+        {
+            "subregion": df[c_sub].astype(str).str.strip(),
+            "cod_dane_dpto": df[c_cd].astype(int).astype(str).str.zfill(2),
+            "departamento": df[c_d].astype(str).str.strip(),
+            "cod_dane_mpio": df[c_cm].astype(int).astype(str).str.zfill(5),
+            "municipio_xlsx": df[c_m].astype(str).str.strip(),
+        }
+    )
     if len(out) != N_ESPERADO:
         fallar(f"El Excel tiene {len(out)} filas, se esperaban {N_ESPERADO}.")
     dup = out["cod_dane_mpio"][out["cod_dane_mpio"].duplicated()].tolist()
@@ -107,9 +110,13 @@ def leer_hoja2_id(xlsx: str):
         df = pd.read_excel(xlsx, sheet_name=1)
         c_id = pick(df.columns, ["id"], "id")
         c_cm = pick(df.columns, ["Código DANE Municipio"], "codigo municipio")
-        return dict(zip(df[c_cm].astype(int).astype(str).str.zfill(5), df[c_id].astype(int)))
+        return dict(
+            zip(df[c_cm].astype(int).astype(str).str.zfill(5), df[c_id].astype(int))
+        )
     except Exception as e:  # noqa: BLE001
-        print(f"[aviso] No pude leer la Hoja 2 ({e}); el id del catalogo sera consecutivo.")
+        print(
+            f"[aviso] No pude leer la Hoja 2 ({e}); el id del catalogo sera consecutivo."
+        )
         return {}
 
 
@@ -187,25 +194,32 @@ def main():
         doc = {
             "cod_dane_mpio": cod,
             "cod_dane_dpto": r["cod_dane_dpto"],
-            "municipio": str(r[c_nom]).strip(),          # nombre canonico = MGN
+            "municipio": str(r[c_nom]).strip(),  # nombre canonico = MGN
             "departamento": r["departamento"],
             "subregion_pdet": {"id": int(r["subregion_id"]), "nombre": r["subregion"]},
             "area_oficial_km2": float(r[c_area]),
             "geometry": mapping(r.geometry),
-            "bbox": [float(x) for x in r.geometry.bounds],  # minLon,minLat,maxLon,maxLat
-            "metadata_mgn": {"vigencia": 2025, "crs": "EPSG:4326",
-                             "source_xlsx": Path(a.xlsx).name,
-                             "nombre_xlsx": r["municipio_xlsx"],
-                             "cargado_en": ahora.isoformat(timespec="seconds")},
+            "bbox": [
+                float(x) for x in r.geometry.bounds
+            ],  # minLon,minLat,maxLon,maxLat
+            "metadata_mgn": {
+                "vigencia": 2025,
+                "crs": "EPSG:4326",
+                "source_xlsx": Path(a.xlsx).name,
+                "nombre_xlsx": r["municipio_xlsx"],
+                "cargado_en": ahora.isoformat(timespec="seconds"),
+            },
         }
         tam = len(BSON.encode(doc))
         if tam >= MAX_DOC_BYTES:
-            fallar(f"{cod}: documento de {tam/1e6:.1f} MB supera 16 MB")
+            fallar(f"{cod}: documento de {tam / 1e6:.1f} MB supera 16 MB")
         if tam >= AVISO_DOC_BYTES:
             grandes.append((cod, round(tam / 1e6, 2)))
         docs.append(doc)
 
-    print(f"Documentos listos: {len(docs)} | subregiones: {cat['subregion_id'].nunique()}")
+    print(
+        f"Documentos listos: {len(docs)} | subregiones: {cat['subregion_id'].nunique()}"
+    )
     if grandes:
         print(f"[aviso] Documentos > 8 MB: {grandes}")
 
@@ -237,14 +251,16 @@ def main():
 
     catalogo = []
     for i, r in enumerate(cat.itertuples(index=False), start=1):
-        catalogo.append({
-            "id": int(id_hoja2.get(r.cod_dane_mpio, i)),
-            "subregion_pdet": r.subregion,
-            "cod_dane_dpto": int(r.cod_dane_dpto),
-            "departamento": r.departamento,
-            "cod_dane_mpio": int(r.cod_dane_mpio),
-            "municipio": r.municipio_xlsx,
-        })
+        catalogo.append(
+            {
+                "id": int(id_hoja2.get(r.cod_dane_mpio, i)),
+                "subregion_pdet": r.subregion,
+                "cod_dane_dpto": int(r.cod_dane_dpto),
+                "departamento": r.departamento,
+                "cod_dane_mpio": int(r.cod_dane_mpio),
+                "municipio": r.municipio_xlsx,
+            }
+        )
     db.catalogo_municipios_pdet.insert_many(catalogo, ordered=False)
     db.catalogo_municipios_pdet.create_index("cod_dane_mpio", unique=True)
 
@@ -252,7 +268,9 @@ def main():
     col.insert_many(docs, ordered=False)
     col.create_index([("cod_dane_mpio", ASCENDING)], unique=True)
     try:
-        col.create_index([("geometry", GEOSPHERE)])   # falla si alguna geometria no es valida en esfera
+        col.create_index(
+            [("geometry", GEOSPHERE)]
+        )  # falla si alguna geometria no es valida en esfera
     except PyMongoError as e:
         fallar(f"MongoDB rechazo el indice 2dsphere: {e}")
     col.create_index([("subregion_pdet.id", ASCENDING)])
@@ -264,16 +282,22 @@ def main():
     errores = []
     for _, r in m.iterrows():
         punto = shapely.point_on_surface(r.geometry)
-        hit = col.find_one({"geometry": {"$geoIntersects": {"$geometry": mapping(punto)}}},
-                           {"cod_dane_mpio": 1})
+        hit = col.find_one(
+            {"geometry": {"$geoIntersects": {"$geometry": mapping(punto)}}},
+            {"cod_dane_mpio": 1},
+        )
         if not hit or hit["cod_dane_mpio"] != r["cod_dane_mpio"]:
             errores.append(r["cod_dane_mpio"])
     if errores:
         fallar(f"$geoIntersects no devolvio el municipio esperado en: {errores}")
 
-    print(f"OK: {n} municipios en {a.db}.municipalities_pdet, indices: "
-          f"{[i['name'] for i in col.list_indexes()]}")
-    print("Prueba $geoIntersects (punto interior de cada municipio): 170/170 correctas.")
+    print(
+        f"OK: {n} municipios en {a.db}.municipalities_pdet, indices: "
+        f"{[i['name'] for i in col.list_indexes()]}"
+    )
+    print(
+        "Prueba $geoIntersects (punto interior de cada municipio): 170/170 correctas."
+    )
 
 
 if __name__ == "__main__":

@@ -13,3 +13,11 @@ data/*.dbf
 data/*.prj
 data/*.cpg
 data/*.ndjson
+data/*.shp.xml
+data/*.sbn
+data/*.sbx
+data/*.sr.lock
+
+# Copias o similar
+
+data/*.zip
