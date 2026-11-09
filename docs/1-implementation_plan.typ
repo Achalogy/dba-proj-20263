@@ -9,6 +9,10 @@ El objetivo central es diseñar e implementar un flujo de trabajo de análisis g
 + Estimar el área total de cubiertas/techos (_rooftop area_) con potencial de captación solar en cada municipio.
 + Evaluar y comparar de manera rigurosa al menos dos fuentes de datos abiertas de detección de edificaciones por satélite (*Microsoft Building Footprints* y *Google Open Buildings*).
 + Implementar toda la persistencia, indexación y procesamiento geoespacial sobre una solución de base de datos *NoSQL* (MongoDB con soporte nativo de GeoJSON e índices 2dsphere).
++ Calidad de datos: Validación topológica exhaustiva, reparación de geometrías y control de integridad en cada etapa.
++ Estandarización: Adopción estricta de CRS EPSG:4326 para almacenamiento GeoJSON y EPSG:9377 para proyecciones métricas.
++ Eficiencia: Procesamiento en streaming/chunking y carga masiva desordenada con indexación espacial 2dsphere post-carga.
++ Reproducibilidad: Trazabilidad integral de código en GitHub, aislamiento de entornos y pipelines ejecutables de inicio a fin.
 + Producir un informe técnico exhaustivo con recomendaciones claras para pruebas de concepto de granjas solares y generación solar descentralizada.
 
 == Metodología General del Proyecto
@@ -99,6 +103,7 @@ La metodología adoptada sigue un ciclo integral de ingeniería de datos geoespa
   - Mapas temáticos coropléticos que resalten los municipios PDET con mayor densidad y área neta de techos disponibles.
 
 === Fase 5: Reporte Técnico Final y Recomendaciones UPME (Semana 4)
+- *Indicadores Clave de Comparación (KPIs):* Evaluación analítica de cantidad de edificios detectados, área total de huellas (m² y ha), y área promedio y mediana por edificación (m²).
 - *Consolidación de Evidencias:* Integración metodológica de los códigos, gráficos, mapas y resultados cuantitativos.
 - *Priorización de Sitios para Granjas / Techos Solares:* Identificación del Top 10 de municipios PDET con mayor potencial técnico para proyectos piloto de autogeneración y microrredes solares comunitarias.
 - *Recomendaciones Estratégicas a la UPME:* Directrices sobre selección de datasets satelitales, limitaciones de resolución en zonas selváticas/rurales dispersas y arquitectura NoSQL recomendada para producción continua.
@@ -142,3 +147,61 @@ La metodología adoptada sigue un ciclo integral de ingeniería de datos geoespa
 + *Escalabilidad NoSQL:* Empleo de índices compuestos y geoespaciales para garantizar que las consultas sobre millones de polígonos se ejecuten en tiempos eficientes de agregación.
 + *Precisión Cartográfica:* Manejo riguroso de transformaciones de coordenadas elipsoidales y proyectadas para evitar distorsiones en el cálculo de áreas superficiales de techos.
 + *Colaboración Continua:* Control de versiones estricto en GitHub con commits y pull requests frecuentes y equilibrados entre todos los integrantes, garantizando trazabilidad y preparación homogénea para las evaluaciones orales individuales.
+
+== Herramientas y Tecnologías Propuestas
+
+El stack tecnológico seleccionado garantiza procesamiento geoespacial de alto rendimiento, escalabilidad NoSQL y reproducibilidad absoluta del pipeline :
+
+#figure(
+  table(
+    columns: (1.5fr, 1.5fr, 3fr),
+    align: (left, left, left),
+    stroke: 0.5pt + luma(150),
+    fill: (_, row) => if row == 0 { rgb("f0f4f8") } else { none },
+    [*Herramienta*], [*Categoría*], [*Rol en el Proyecto*],
+    [Python 3.10+], [Lenguaje de Programación], [Lenguaje núcleo para la extracción, limpieza, transformación, orquestación de ingesta y modelado estadístico.],
+    [MongoDB (Community/Atlas)], [Motor de Base de Datos NoSQL], [Repositorio central documental BSON con indexación geoespacial 2dsphere y soporte de consultas espaciales nativas.],
+    [MongoDB Compass], [Cliente Gráfico NoSQL], [Inspección visual de esquemas documentales, validación de índices 2dsphere y depuración de pipelines de agregación.],
+    [GeoPandas], [Librería de Análisis Geoespacial], [Manipulación de GeoDataFrames, particionamiento espacial, operaciones vectoriales y generación de mapas temáticos.],
+    [Shapely], [Geometría Computacional], [Validación topológica, reparación de geometrías (`make_valid`), simplificación y cálculo de intersecciones poligonales.],
+    [PyProj], [Transformación Cartográfica], [Reproyección rigurosa entre CRS geodésico (WGS84 EPSG:4326) y métrico proyectado (MAGNA-SIRGAS EPSG:9377).],
+    [Pandas], [Procesamiento Tabular], [Consolidación de tablas resumen, agregaciones estadísticas, cálculo de discrepancias y métricas comparativas.],
+    [PyMongo], [Driver de Base de Datos], [Conexión e inserciones masivas por lotes (`bulk_write` con `InsertOne`) optimizando tiempos de I/O en MongoDB.],
+    [Git & GitHub], [Control de Versiones y CI], [Control de versiones del repositorio, gestión colaborativa por ramas, trazabilidad de commits y revisión por pull requests.],
+    [QGIS], [SIG de Escritorio], [Inspección visual cartográfica externa, control de calidad visual y validación de geometrías exportadas.]
+  ),
+  caption: [Stack tecnológico del proyecto.]
+)
+
+== Reglas de Negocio Explícitas (RN-01 a RN-10)
+
+- *RN-01 (Alcance Territorial):* El análisis se circunscribe estrictamente a los 170 municipios priorizados como territorios PDET por el Gobierno Nacional y la ART .
+- *RN-02 (Estándar Geodésico de Almacenamiento):* Todas las geometrías almacenadas en MongoDB deben adoptar el estándar WGS84 (EPSG:4326) con formato GeoJSON válido .
+- *RN-03 (Exactitud Métrica de Áreas):* El cálculo del área de cubiertas ($m^2$) debe realizarse mediante proyección cartográfica métrica oficial (EPSG:9377 Origen Nacional) o cálculo geodésico elipsoidal .
+- *RN-04 (Umbral Mínimo de Confianza):* Para el conjunto Google Open Buildings, únicamente se consideran polígonos con un índice de confianza igual o superior a 0.65 .
+- *RN-05 (Filtro de Área Plausible para Techos):* Se descartan huellas con área inferior a $10 m^2$ (ruido de detección satelital) y huellas con área superior a $20,000 m^2$ no validadas estructuralmente .
+- *RN-06 (Integridad Topológica Obligatoria):* Ninguna geometría con auto-intersecciones, anillos no cerrados o vértices inválidos puede insertarse en las colecciones limpias de la base de datos .
+- *RN-07 (Separación de Capas Raw vs Cleaned):* Se mantiene estricta segregación física o lógica entre las capas crudas (_raw data_ de ingesta) y las colecciones limpias y normalizadas (_cleaned data_) .
+- *RN-08 (Indexación Espacial 2dsphere):* Cada colección con datos vectoriales debe poseer un índice espacial 2dsphere activo sobre el campo `geometry` para habilitar consultas espaciales nativas .
+- *RN-09 (Trazabilidad y Linaje de Fuente):* Cada documento de huella debe incorporar obligatoriamente los atributos de linaje: `building_id`, `source`, `municipality_code` y timestamp de ingesta .
+- *RN-10 (Determinismo y Reproducibilidad):* La ejecución del pipeline automatizado sobre los mismos datasets de entrada debe producir idénticas métricas agregadas por municipio .
+
+== Niveles de Limpieza de Datos y Esquema Unificado de Huellas
+
+La arquitectura de datos implementa una estrategia de transformación por capas :
+- *Capa Cruda (Raw Level):* Ingesta directa de archivos fuente en su formato nativo (GeoJSON, GeoParquet, CSV con WKT). Se preservan metadatos originales sin filtrado para garantizar auditoría técnica .
+- *Capa Limpia (Cleaned Level):* Aplicación de filtros de calidad (confianza $>= 0.65$, área entre $10 m^2$ y $20,000 m^2$), reparación topológica con Shapely y estructuración al esquema BSON unificado .
+
+== Roles Específicos del Equipo de Trabajo
+- *Analista de Requerimientos y Datos Territoriales (Juliana Novoa):* Formalización de especificaciones técnicas, adquisición del MGN 2025 DANE, filtrado oficial de los 170 municipios PDET y liderazgo del reporte técnico para la UPME.
+- *Especialista en Adquisición y Calidad de Datos (Juan Saavedra):* Descarga y particionamiento de datasets masivos (Microsoft y Google), pipeline de limpieza topológica con Shapely y aplicación de reglas de negocio para capas raw y cleaned.
+- *Administrador de Bases de Datos NoSQL (Juan Garzón):* Arquitectura de MongoDB, diseño del esquema BSON unificado, optimización de inserciones masivas desordenadas y gestión de índices espaciales 2dsphere.
+- *Analista Geoespacial e Integración (Miguel Vargas):* Desarrollo de pipelines de análisis espacial con GeoPandas y PyMongo, agregación de métricas solares por municipio, síntesis cartográfica y orquestación reproducible en GitHub.
+
+== Criterios de Finalización y Aceptación
+
+- Cobertura Territorial Total: Verificación exitosa del 100% de los 170 municipios PDET indexados y cruzados en la base de datos sin omisiones .
+- Cumplimiento de Reglas Topológicas: Tasa del 100% de geometrías válidas en las colecciones limpias tras el proceso de corrección geométrica .
+- Eficiencia en Consultas Espaciales: Confirmación de uso efectivo del índice 2dsphere en todas las agregaciones espaciales documentado mediante cursor.explain() .
+- Consistencia del Pipeline de Métricas: Generación determinística de tablas agregadas de área, recuento y análisis de discrepancia relativa entre fuentes .
+- Trazabilidad y Repartición Colaborativa: Historial de Git con aportes balanceados y verificables entre los cuatro integrantes y documentación técnica completa .
