@@ -1,4 +1,4 @@
-= Integración Geoespacial en NoSQL (NoSQL Spatial Integration)
+g= Integración Geoespacial en NoSQL (NoSQL Spatial Integration)
 
 == Alcance y Objetivos de la Etapa
 
@@ -7,7 +7,7 @@ Esta sección documenta la persistencia real y la integración geoespacial de lo
 Tras haber verificado la calidad topológica de los datos de origen (MGN2025 del DANE) y haber estructurado y validado el modelo de documentos en formato GeoJSON, en esta etapa se ejecutó el proceso de ingestión directa sobre la base de datos sin restricciones de simulación (`--dry-run`). Los objetivos cumplidos en esta fase son:
 
 + *Despliegue del entorno NoSQL:* Levantamiento y configuración de una instancia local aislada de MongoDB mediante contenedores Docker.
-+ *Carga real e idempotente de datos:* Ingestión de los 170 municipios en la colección `municipalities_pdet` y de los metadatos tabulares en `catalogo_municipios_pdet` a través del script `prepare-pdet.py` ejecutado con `uv`.
++ *Carga real e idempotente de datos:* Ingestión de los 170 municipios en la colección `municipalities_pdet` y de los metadatos tabulares en `catalogo_municipios_pdet` a través del script `prepare-pdet.py`.
 + *Creación y verificación de índices:* Construcción del índice espacial esférico `2dsphere` sobre el campo `geometry`, junto con los índices B-Tree únicos y de partición sobre `cod_dane_mpio` y `subregion_pdet.id`.
 + *Validación espacial exhaustiva de punto interior:* Comprobación de integridad topológica y cobertura sobre la esfera mediante consultas `$geoIntersects` generadas a partir del punto interior (`point_on_surface`) de cada uno de los 170 municipios, alcanzando una tasa de éxito de 170/170 aciertos (100 %).
 + *Auditoría de planes de ejecución (`explain`):* Demostración de que las búsquedas espaciales utilizan eficazmente el índice `geometry_2dsphere` mediante escaneos de índice (`IXSCAN`), descartando escaneos lineales de colección (`COLLSCAN`).
@@ -18,18 +18,18 @@ Para asegurar la reproducibilidad del entorno de desarrollo y evitar discrepanci
 
 #figure(
   text(size: 9.5pt)[
-    ```yaml
-    services:
-      mongodb:
-        image: mongo:latest
-        container_name: mongodb
-        restart: unless-stopped
-        environment:
-          MONGO_INITDB_ROOT_USERNAME: acha
-          MONGO_INITDB_ROOT_PASSWORD: acha
-        ports:
-          - "27017:27017"
-    ```
+```yaml
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: acha
+      MONGO_INITDB_ROOT_PASSWORD: acha
+    ports:
+      - "27017:27017"
+```
   ],
   caption: [Definición del servicio MongoDB en `compose.yml`.],
 )
@@ -38,7 +38,7 @@ Para asegurar la reproducibilidad del entorno de desarrollo y evitar discrepanci
 
 Desde la raíz del repositorio o dentro de la carpeta del módulo, el servicio se inicia en segundo plano con el siguiente comando:
 
-```bash
+```powershell
 docker compose -f src/2-mongo_container_test/compose.yml up -d
 ```
 
@@ -55,23 +55,12 @@ La cadena de conexión (URI) utilizada para autenticar al usuario administrador 
 mongodb://acha:acha@localhost:27017/?authSource=admin
 ```
 
-== Ejecución de la Carga Real (`prepare-pdet.py`) con `uv`
+== Ejecución de la Carga Real (`prepare-pdet.py`)
 
-Con la base de datos en ejecución y autenticada, se procedió a invocar el script de preparación y carga `prepare-pdet.py` mediante el gestor de entornos `uv`, omitiendo la bandera `--dry-run`. De este modo, se habilitó la escritura activa sobre MongoDB y se exportó simultáneamente el archivo consolidado en formato NDJSON para respaldo local:
-
-```bash
-uv run src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py \
-  --mgn data/MGN_ADM_MPIO_GRAFICO.shp \
-  --xlsx data/MunicipiosPDET.xlsx \
-  --export data/processed/municipalities_pdet.ndjson \
-  --uri "mongodb://acha:acha@localhost:27017/?authSource=admin" \
-  --db upme_pdet
-```
-
-En entornos Windows PowerShell, el comando se expresa con el carácter de continuación de línea (\`):
+Con la base de datos en ejecución y autenticada, se procedió a invocar el script de preparación y carga `prepare-pdet.py` omitiendo la bandera `--dry-run`, habilitando así la escritura activa sobre MongoDB y exportando simultáneamente el archivo consolidado en formato NDJSON para respaldo local.
 
 ```powershell
-uv run src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py `
+python src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py `
   --mgn data/MGN_ADM_MPIO_GRAFICO.shp `
   --xlsx data/MunicipiosPDET.xlsx `
   --export data/processed/municipalities_pdet.ndjson `
@@ -85,7 +74,7 @@ El script procesó las geometrías de los 1.122 municipios del shapefile origina
 
 ```text
 Documentos listos: 170 | subregiones: 16
-NDJSON exportado en data/processed/municipalities_pdet.ndjson
+NDJSON exportado en data\processed\municipalities_pdet.ndjson
 OK: 170 municipios en upme_pdet.municipalities_pdet, indices: ['_id_', 'cod_dane_mpio_1', 'geometry_2dsphere', 'subregion_pdet.id_1']
 Prueba $geoIntersects (punto interior de cada municipio): 170/170 correctas.
 ```
@@ -104,38 +93,19 @@ Para garantizar que el flujo de trabajo sea estrictamente reproducible y no gene
 En bases de datos documentales, la correcta selección de índices resulta crítica para garantizar tiempos de respuesta subsegundo en operaciones geoespaciales sobre grandes volúmenes de datos. En particular, la posterior integración con las huellas de edificaciones (que contienen millones de polígonos) exigirá resolver consultas de pertenencia espacial de forma óptima.
 
 #figure(
-  text(size: 9.5pt)[
+  text(size: 10.5pt)[
     #table(
-      columns: (auto, auto, auto, auto, auto),
+      columns: (1.5fr, 1.4fr, 1fr, 1fr, 2.1fr),
       align: (left, left, center, right, left),
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Colección*], [*Nombre del Índice*], [*Tipo*], [*Tamaño*], [*Propósito y Comportamiento*],
       [`municipalities_pdet`], [`_id_`], [B-Tree], [20 KB], [Identificador único nativo del documento.],
-      [`municipalities_pdet`],
-      [`cod_dane_mpio_1`],
-      [B-Tree (Único)],
-      [20 KB],
-      [Garantiza unicidad de los códigos DANE de 5 dígitos y acelera cruces por llave primaria de negocio.],
-
-      [`municipalities_pdet`],
-      [`geometry_2dsphere`],
-      [2dsphere (v4)],
-      [64 KB],
-      [Índice geoespacial esférico sobre WGS84 para operadores `$geoIntersects`, `$geoWithin` y `$near`.],
-
-      [`municipalities_pdet`],
-      [`subregion_pdet.id_1`],
-      [B-Tree],
-      [20 KB],
-      [Indexación de campo anidado para filtrado directo por subregión PDET (1 a 16).],
-
+      [`municipalities_pdet`], [`cod_dane_mpio_1`], [B-Tree (Único)], [20 KB], [Garantiza unicidad de los códigos DANE de 5 dígitos y acelera cruces por llave primaria de negocio.],
+      [`municipalities_pdet`], [`geometry_2dsphere`], [2dsphere (v4)], [64 KB], [Índice geoespacial esférico sobre WGS84 para operadores `$geoIntersects`, `$geoWithin` y `$near`.],
+      [`municipalities_pdet`], [`subregion_pdet.id_1`], [B-Tree], [20 KB], [Indexación de campo anidado para filtrado directo por subregión PDET (1 a 16).],
       [`catalogo_municipios_pdet`], [`_id_`], [B-Tree], [20 KB], [Identificador único nativo del catálogo.],
-      [`catalogo_municipios_pdet`],
-      [`cod_dane_mpio_1`],
-      [B-Tree (Único)],
-      [20 KB],
-      [Unicidad e indexación rápida para la entidad de catálogo PDET.],
+      [`catalogo_municipios_pdet`], [`cod_dane_mpio_1`], [B-Tree (Único)], [20 KB], [Unicidad e indexación rápida para la entidad de catálogo PDET.],
     )
   ],
   caption: [Índices creados y verificados en la base de datos MongoDB `upme_pdet`.],
@@ -185,18 +155,9 @@ for _, r in m.iterrows():
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Métrica de Evaluación*], [*Resultado*], [*Observación / Diagnóstico*],
       [Puntos interiores evaluados], [170 / 170], [Se probó un punto interior por cada municipio PDET.],
-      [Coincidencias exactas (`$geoIntersects`)],
-      [170 / 170],
-      [El municipio retornado coincidió al 100 % con el código esperado.],
-
-      [Falsos negativos o fallos de intersección],
-      [0 / 170],
-      [Ningún punto interior cayó en vacío o fuera de su polígono.],
-
-      [Confusiones o colisiones espaciales],
-      [0 / 170],
-      [Ningún punto interior intersectó erróneamente un municipio vecino.],
-
+      [Coincidencias exactas (`$geoIntersects`)], [170 / 170], [El municipio retornado coincidió al 100 % con el código esperado.],
+      [Falsos negativos o fallos de intersección], [0 / 170], [Ningún punto interior cayó en vacío o fuera de su polígono.],
+      [Confusiones o colisiones espaciales], [0 / 170], [Ningún punto interior intersectó erróneamente un municipio vecino.],
       [Tasa de efectividad de la prueba], [100.0 %], [Validación espacial superada de forma íntegra.],
     )
   ],
@@ -264,12 +225,105 @@ Mediante el comando administrativo `collStats`, se recolectaron las dimensiones 
 
 El motor de almacenamiento *WiredTiger* logra una compresión física de casi el 50 % sobre las coordenadas de los polígonos, manteniendo los índices espaciales completamente en memoria RAM (apenas 124 KB totales de índice para toda la colección).
 
-== Conclusión de la Fase 2
+== Integración Espacial de Huellas de Edificaciones (Microsoft y Google)
 
-Con la ejecución de esta etapa, se da cumplimiento total a los requisitos establecidos para la *Semana 2* en el plan de trabajo:
+Tras la ingestión y restauración del conjunto masivo de huellas de construcciones (`buildings_microsoft` con 1.761.047 registros y `buildings_google` con 2.694.786 registros), se implementaron y verificaron los índices espaciales esféricos (`2dsphere`) y compuestos requeridos para habilitar consultas de alta velocidad sobre los 4,45 millones de edificaciones.
 
-+ *Adquisición y Verificación:* Datos oficiales MGN2025 del DANE y catálogo PDET verificados, sin inconsistencias de códigos ni de áreas.
-+ *Integridad y Formato:* Geometrías reparadas, forzadas a 2D en EPSG:4326 y empaquetadas en documentos GeoJSON que respetan el límite de 16 MB de BSON.
-+ *Integración Espacial NoSQL:* Instancia de MongoDB operativa, colecciones pobladas, índices `2dsphere` creados sin errores y validados con 170/170 aciertos en pruebas de intersección espacial por punto interior.
+=== Catálogo de Índices Implementados
 
-La base de datos se encuentra en un estado óptimo y preparado para iniciar la *Fase 3: Carga e Integración de Huellas de Edificaciones (Microsoft Building Footprints y Google Open Buildings)*.
+#figure(
+  text(size: 10pt)[
+    #table(
+      columns: (1.4fr, 1.3fr, 1.1fr, 0.9fr, 2.3fr),
+      align: (left, left, center, right, left),
+      stroke: 0.5pt + luma(150),
+      fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
+      [*Colección*], [*Nombre del Índice*], [*Tipo*], [*Espacio*], [*Campos Indexados y Propósito*],
+      [`buildings_microsoft`], [`geometry_2dsphere`], [2dsphere (v4)], [31,69 MB], [`geometry`: Polígonos GeoJSON de huella para `$geoIntersects` y topología exacta.],
+      [`buildings_microsoft`], [`centroid_2dsphere`], [2dsphere (v4)], [27,22 MB], [`centroid`: Punto GeoJSON de ubicación para `$near`, `$geoWithin` y clustering.],
+      [`buildings_microsoft`], [`mpio_area`], [B-Tree Compuesto], [29,62 MB], [`{cod_dane_mpio: 1, rooftop_area_m2: -1}`: Filtrado municipal y ordenamiento por área.],
+      [`buildings_microsoft`], [`quadkey_1`], [B-Tree], [8,72 MB], [`quadkey`: Trazabilidad y partición por tesela de Microsoft.],
+      [`buildings_google`], [`centroid_2dsphere`], [2dsphere (v4)], [41,62 MB], [`centroid`: Punto GeoJSON para operadores esféricos (`$geoWithin`, `$near`).],
+      [`buildings_google`], [`mpio_area`], [B-Tree Compuesto], [49,37 MB], [`{cod_dane_mpio: 1, rooftop_area_m2: -1}`: Consultas analíticas y percentiles por municipio.],
+      [`buildings_google`], [`source_file_1`], [B-Tree], [12,90 MB], [`source_file`: Control de ingestión y reanudación idempotente.],
+    )
+  ],
+  caption: [Índices espaciales y analíticos en las colecciones de huellas de edificaciones.],
+)
+
+=== Evidencia de Auditoría con Planes de Ejecución (`explain`)
+
+Para comprobar empíricamente que MongoDB utiliza los índices espaciales construidos y no realiza escaneos exhaustivos sobre los millones de documentos, se auditaron las siguientes consultas mediante `explain("executionStats")`:
+
+==== 1. Intersección Espacial sobre Polígonos de Microsoft (`$geoIntersects`)
+Se consultó la edificación cuya huella encierra un punto arbitrario en el municipio de Santa Marta:
+
+```javascript
+db.buildings_microsoft.find({
+  geometry: {
+    $geoIntersects: {
+      $geometry: { type: "Point", coordinates: [-73.8297, 11.2489] }
+    }
+  }
+}).explain("executionStats");
+```
+
+- *Etapa ganadora (`winningPlan`):* `FETCH` $arrow.l$ `IXSCAN`.
+- *Índice utilizado:* `geometry_2dsphere`.
+- *Tiempo de ejecución:* *22 ms*.
+- *Documentos examinados:* 62 documentos (descartando 1.760.985 registros no pertinentes).
+- *Documentos retornados:* 1 documento coincidente exacto.
+
+==== 2. Consulta de Proximidad Radial sobre Centroides de Microsoft (`$geoWithin`)
+Se realizó una búsqueda de edificaciones en un radio de 1 km alrededor de Santa Marta (`$centerSphere`):
+
+```javascript
+db.buildings_microsoft.find({
+  centroid: {
+    $geoWithin: {
+      $centerSphere: [ [-74.21, 11.24], 1 / 6378.1 ]
+    }
+  }
+}).explain("executionStats");
+```
+
+- *Etapa ganadora:* `FETCH` $arrow.l$ `IXSCAN`.
+- *Índice utilizado:* `centroid_2dsphere`.
+- *Tiempo de ejecución:* *13 ms*.
+- *Documentos examinados:* 2.519 candidatos espaciales.
+- *Documentos retornados:* 1.977 edificaciones en el radio definido.
+
+==== 3. Consulta de Proximidad Radial sobre Centroides de Google (`$geoWithin`)
+Se ejecutó una consulta esférica análoga sobre la colección de Google (2,69 millones de documentos) en un radio de 1 km en la cabecera de Valledupar:
+
+```javascript
+db.buildings_google.find({
+  centroid: {
+    $geoWithin: {
+      $centerSphere: [ [-73.25, 10.46], 1 / 6378.1 ]
+    }
+  }
+}).explain("executionStats");
+```
+
+- *Etapa ganadora:* `FETCH` $arrow.l$ `IXSCAN`.
+- *Índice utilizado:* `centroid_2dsphere`.
+- *Tiempo de ejecución:* *93 ms*.
+- *Documentos examinados:* 17.413 candidatos espaciales.
+- *Documentos retornados:* 11.604 edificaciones identificadas.
+
+==== 4. Aceleración Analítica con Índice Compuesto `mpio_area`
+Se evaluó el filtrado de construcciones con potencial solar superior a 100 m² en Santa Marta (`cod_dane_mpio: "47001"`):
+
+- *Índice utilizado:* `mpio_area`.
+- *Tiempo de ejecución:* *91 ms*.
+- *Documentos examinados:* 33.971 documentos.
+- *Documentos retornados:* 33.971 registros (`totalDocsExamined == nReturned`, eficiencia perfecta 1:1 sin inspección de documentos ajenos).
+
+== Conclusión de la Fase 2 y Enlace con Fase 3
+
+Con la ejecución de esta etapa, se da cumplimiento total a los requisitos establecidos para la integración espacial NoSQL:
++ *Límites Municipales:* 170 municipios PDET cargados e indexados con `2dsphere` y validados con 170/170 aciertos en pruebas de punto interior.
++ *Huellas Masivas:* 4.455.833 edificaciones (1,76 M en Microsoft y 2,69 M en Google) indexadas espacialmente con tiempos de respuesta inferiores a 100 milisegundos.
+
+La infraestructura NoSQL queda completamente optimizada para el análisis exploratorio de datos (EDA) y la estimación geoespacial del potencial solar fotovoltaico en cubiertas.
