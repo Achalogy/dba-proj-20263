@@ -1,0 +1,28 @@
+{
+  "tag": "lote1000",
+  "batch_size": 1000,
+  "index_first": false,
+  "dry_run": false,
+  "leidos": 1499624,
+  "descartados_geometria": 0,
+  "fuera_pdet": 1402897,
+  "insertados": 96727,
+  "errores_insercion": 0,
+  "archivos": 5,
+  "segundos": {
+    "descarga": 78.1,
+    "lectura": 103.2,
+    "proceso": 69.9,
+    "insercion": 2.7,
+    "indices": 2.9,
+    "total": 256.7
+  },
+  "docs_por_segundo": 377,
+  "memoria_pico_mb": 488,
+  "almacenamiento": {
+    "tamano_logico_mb": 56.3,
+    "en_disco_mb": 14.5,
+    "indices_mb": 6.2,
+    "documentos": 96727
+  }
+}
