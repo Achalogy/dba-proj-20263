@@ -31,12 +31,12 @@ La base de datos NoSQL `upme_pdet` integra un total consolidado de *4.455.833 ed
       [Desviación estándar (m²)], [234,28 m²], [125,86 m²], [Mayor dispersión en Microsoft],
       [Área mínima registrada], [9,69 m²], [2,51 m²], [Google detecta micro-techos],
       [Área máxima registrada], [44.667,17 m²], [20.916,70 m²], [Galpones / complejos industriales],
-      [Espacio lógico sin comprimir], [973,02 MB], [992,00 MB], [Volumen similar en RAM],
-      [Espacio en disco (WiredTiger)], [247,99 MB], [176,25 MB], [Google más compacto (solo Point)],
-      [Tamaño total de índices], [111,54 MB], [127,68 MB], [Totalmente residentes en memoria],
+      [Espacio lógico sin comprimir], [973,02 MiB], [992,00 MiB], [Volumen similar en RAM],
+      [Espacio en disco (WiredTiger)], [247,99 MiB], [176,25 MiB], [Google más compacto (solo Point)],
+      [Tamaño total de índices], [111,54 MiB], [127,68 MiB], [Totalmente residentes en memoria],
     )
   ],
-  caption: [Resumen comparativo de métricas globales entre Microsoft y Google Open Buildings.],
+  caption: [Resumen comparativo de métricas globales entre Microsoft y Google Open Buildings (tamaños de almacenamiento en MiB binarios según `collStats`; equivalen a 1.020 MB / 260 MB / 117 MB en Microsoft y 1.040 MB / 184 MB / 134 MB en Google en base decimal).],
 )
 
 === Hallazgo Crítico: Convergencia de Área Total de Captación
@@ -45,7 +45,7 @@ El resultado más destacado del análisis exploratorio es la *sorprendente conve
 - Microsoft estima *221,13 km²* de techos en los municipios PDET.
 - Google Open Buildings estima *223,01 km²*.
 
-A pesar de que Google detecta casi un millón de estructuras adicionales (+53,0 %), la diferencia neta en la superficie captadora total es de únicamente *1,88 km² (0,85 %)*. 
+A pesar de que Google detecta casi un millón de estructuras adicionales (+53,0 %), la diferencia neta en la superficie captadora total es de únicamente *1,88 km² (0,85 %)*.
 
 Este fenómeno se explica por la diferencia en la resolución y segmentación de los modelos de visión artificial: mientras que Google segmenta cubiertas individuales o partes modulares de una misma vivienda/edificación (generando muchas detecciones pequeñas con promedio de 82,8 m²), Microsoft tiende a fusionar huellas contiguas en polígonos consolidados (con promedio de 125,6 m²).
 
@@ -105,7 +105,7 @@ El modelo de detección de Google asigna un puntaje de probabilidad/confianza (`
   caption: [Distribución de la confianza de detección en Google Open Buildings.],
 )
 
-Más del *65 %* de las edificaciones en Google presentan un nivel de confianza superior a 0,75, lo que garantiza una baja tasa de falsos positivos para planeación de energía solar.
+Casi el *65 %* (exactamente 64,98 %, equivalente a 1.751.077 edificaciones) de los registros en Google presentan un nivel de confianza igual o superior a 0,75, lo que garantiza una baja tasa de falsos positivos para planeación de energía solar.
 
 === Atributo de Altura en Microsoft (`height_m`)
 El esquema de Microsoft prevé el campo `height_m` para registrar la altura en metros. Sin embargo, en el dataset publicado para Colombia este atributo no fue provisto en los modelos satelitales (registrado como `-1` en los archivos originales y transformado a `null` en la base de datos). Para la Fase 4, la estimación de sombra o inclinación deberá basarse en proxies de área y proyecciones geográficas locales.
@@ -138,6 +138,8 @@ Mientras Microsoft ofrece una cobertura completa del 100 % (170 municipios), Goo
 
 === Top 10 Municipios con Mayor Número de Edificaciones
 
+La siguiente tabla compara los 10 municipios PDET con mayor volumen de edificaciones ordenados según el conteo de *Google Open Buildings*, junto con su equivalente en Microsoft (cabe señalar que en el Top 10 propio de Microsoft aparecen también Tibú con 35.478 edificios, Santander de Quilichao con 30.843 y Arauquita con 27.815).
+
 #figure(
   text(size: 9.5pt)[
     #table(
@@ -158,7 +160,7 @@ Mientras Microsoft ofrece una cobertura completa del 100 % (170 municipios), Goo
       [El Tambo], [Cauca], [34.366], [38.900], [3,05], [2,45],
     )
   ],
-  caption: [Top 10 municipios PDET por número de edificaciones en ambas fuentes.],
+  caption: [Top 10 municipios PDET por número de edificaciones (ordenado por Google Open Buildings) y su contraste con Microsoft.],
 )
 
 Los centros urbanos principales de las subregiones PDET (Santa Marta, Valledupar, Buenaventura y Florencia) concentran más de un cuarto del total de cubiertas del país, perfilándose como los polos prioritarios para proyectos solares descentralizados.
@@ -220,15 +222,11 @@ Para garantizar que todas las cifras, tablas y validaciones expuestas en este do
 
 === Instrucciones de Ejecución
 
-Desde la raíz del repositorio, el análisis se reproduce ejecutando:
+Desde la raíz del repositorio, el análisis se reproduce ejecutando con `uv`:
 
 ```bash
-python src/4-eda/eda.py
+uv run --project src/4-eda \
+  src/4-eda/eda.py \
+  --uri "$MONGO_URI" --db upme_pdet \
+  --output reports/eda_results.json
 ```
-
-O utilizando el gestor de entornos `uv`:
-
-```bash
-uv run --project src/4-eda python src/4-eda/eda.py
-```
-

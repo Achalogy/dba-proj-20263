@@ -58,6 +58,7 @@ services:
     environment:
       MONGO_URI: ${MONGO_URI}
       MONGO_DATABASE: upme_pdet
+      DATA_DIR: /data
 
     volumes:
       - ../../data/google_open_buildings:/data:ro
@@ -80,5 +81,3 @@ volumes:
 networks:
   pdet_network:
     driver: bridge
-
-

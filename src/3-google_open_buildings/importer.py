@@ -5,7 +5,7 @@ Optimizaciones respecto a la versión original:
   - Lectura solo de las columnas necesarias (usecols).
   - Prefiltro por bounding box + shapely.contains_xy con geometría preparada
     (sin construir GeoDataFrames ni usar iterrows).
-  - Un único campo GeoJSON `location` (antes `geometry` y `location` eran idénticos).
+  - Un único campo GeoJSON `centroid` con índice 2dsphere.
   - Procesamiento en paralelo por archivo (ProcessPoolExecutor).
   - Idempotencia: los archivos ya cargados se registran y se saltan al relanzar.
   - Manejo explícito de BulkWriteError.
@@ -29,21 +29,20 @@ from shapely.geometry import shape
 # ----------------------------------------------------------------------
 MONGO_URI = os.environ["MONGO_URI"]
 
-DATABASE_NAME = "upme_pdet"
+DATABASE_NAME = os.getenv("MONGO_DATABASE", "upme_pdet")
 COLLECTION_NAME = "buildings_google"
 CONTROL_COLLECTION = "etl_processed_files"
 
-RAW_DIR = "data/google_open_buildings/raw"
-BOUNDARIES_DIR = "data/google_open_buildings/boundaries"
+DATA_DIR = os.getenv("DATA_DIR", "data/google_open_buildings")
+RAW_DIR = os.getenv("RAW_DIR", os.path.join(DATA_DIR, "raw"))
+BOUNDARIES_DIR = os.getenv("BOUNDARIES_DIR", os.path.join(DATA_DIR, "boundaries"))
 PDET_UNION_PATH = os.path.join(BOUNDARIES_DIR, "pdet_union.geojson")
 
-CHUNK_SIZE = 500_000          # filas leídas por bloque del CSV
-INSERT_BATCH_SIZE = 50_000    # documentos por insert_many
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "500000"))  # filas leídas por bloque del CSV
+INSERT_BATCH_SIZE = int(
+    os.getenv("INSERT_BATCH_SIZE", "50000")
+)  # documentos por insert_many
 MAX_WORKERS = int(os.getenv("ETL_WORKERS", max(1, (os.cpu_count() or 2) - 1)))
-
-# Si necesitas conservar el polígono de la huella (WKT) en lugar de solo el
-# centroide, pon esto en True. Aumenta bastante el tiempo y el almacenamiento.
-KEEP_FOOTPRINT = False
 
 # Reprocesar todo desde cero (vacía la colección y el registro de control).
 RESET = os.getenv("ETL_RESET", "0") == "1"
@@ -94,7 +93,7 @@ def _build_docs(chunk: pd.DataFrame, source_file: str):
     j = j[~j.index.duplicated()]
     meta = {
         "imagery_dates": None,
-        "license": "ODbL-1.0",
+        "license": "CC-BY-4.0 / ODbL-1.0",
         "batch_id": f"google-{source_file}",
         "loaded_at": time.strftime("%Y-%m-%dT%H:%M:%S+00:00", time.gmtime()),
     }
@@ -109,10 +108,14 @@ def _build_docs(chunk: pd.DataFrame, source_file: str):
             "source_file": source_file,
         }
         for cod, x, y, a, c in zip(
-            j["cod_dane_mpio"], j.geometry.x, j.geometry.y,
-            j["area_in_meters"], j["confidence"],
+            j["cod_dane_mpio"],
+            j.geometry.x,
+            j.geometry.y,
+            j["area_in_meters"],
+            j["confidence"],
         )
     ]
+
 
 def _insert(docs):
     """Inserta en lotes y reporta errores parciales sin ocultarlos."""
@@ -244,7 +247,6 @@ def main():
         [("cod_dane_mpio", 1), ("rooftop_area_m2", -1)], name="mpio_area"
     )
     buildings_col.create_index([("source_file", 1)], name="source_file_1")
-    
 
     client.close()
     elapsed = time.perf_counter() - start_global

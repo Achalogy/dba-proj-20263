@@ -7,8 +7,8 @@ Este capítulo describe cómo se cargaron en MongoDB las huellas de edificios de
 Antes de cargar edificios de cualquier fuente hay que tener la frontera de los 170 municipios PDET. Se hace una sola vez.
 
 + *Listado oficial.* Se parte del Excel `MunicipiosPDET.xlsx` y del shapefile del marco geoestadístico (DANE/IGAC).
-+ *Municipios en formato NDJSON.* Un script (`prepare-pdet.py`) cruza el Excel con el shapefile y genera `data/processed/municipalities_pdet.ndjson`, con la geometría de cada municipio PDET.
-+ *Frontera unificada.* Las geometrías de los 170 municipios se disuelven en una sola (`pdet_union.geojson`). Con una única frontera, decidir si un edificio es PDET es una sola pregunta espacial.
++ *Municipios en formato NDJSON.* Un script (`prepare-pdet.py`) cruza el Excel con el shapefile y genera `data/processed/municipalities_pdet.ndjson`, con la geometría de cada municipio PDET, además de poblar la colección `municipalities_pdet` en MongoDB.
++ *Frontera unificada.* Las geometrías de los 170 municipios se disuelven en una sola (`pdet_union.geojson`) mediante `generate_pdet_union.py`. Con una única frontera, decidir si un edificio es PDET es una sola pregunta espacial.
 
 ```bash
 uv run src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py \
@@ -36,7 +36,8 @@ with open(input_ndjson, "r", encoding="utf-8") as f:
                 geometries.append(shape(record["geometry"]))
 
 gdf = gpd.GeoDataFrame(geometry=geometries, crs="EPSG:4326")
-gdf_union = gpd.GeoDataFrame(geometry=[gdf.geometry.union_all()], crs="EPSG:4326")
+dissolved_geom = gdf.geometry.union_all()
+gdf_union = gpd.GeoDataFrame(geometry=[dissolved_geom], crs="EPSG:4326")
 gdf_union.to_file(output_geojson, driver="GeoJSON")
 ```
 
@@ -153,15 +154,15 @@ Lo que se vio:
       [*Dato*], [*Valor*],
       [Edificios guardados], [1.761.047],
       [Tamaño promedio de un edificio], [579 bytes],
-      [Tamaño de los datos sin comprimir], [1.020 MB],
-      [Espacio en disco (comprimido por MongoDB)], [260 MB],
-      [Espacio de todos los índices], [117 MB],
+      [Tamaño de los datos sin comprimir], [1.020 MB (973,0 MiB)],
+      [Espacio en disco (comprimido por MongoDB)], [260 MB (248,0 MiB)],
+      [Espacio de todos los índices], [117 MB (111,5 MiB)],
     )
   ],
-  caption: [Espacio que ocupa la colección `buildings_microsoft`.],
+  caption: [Espacio que ocupa la colección `buildings_microsoft` (valores en MB base 10 del reporte de carga y su equivalente en MiB base 2 de `collStats`).],
 )
 
-MongoDB comprime los datos y los deja casi cuatro veces más pequeños en disco (de 1.020 MB a 260 MB). Los índices pesan 117 MB en total: el espacial del mapa 31,7 MB, el del centroide 27,2 MB, el de municipio y área 29,6 MB, el del cuadro 8,7 MB y el del identificador 19,7 MB.
+MongoDB comprime los datos y los deja casi cuatro veces más pequeños en disco (de 1.020 MB a 260 MB). Los índices pesan 117 MB en total: el espacial del mapa 31,7 MB, el del centroide 27,2 MB, el de municipio y área 29,6 MB, el del cuadro 8,7 MB y el del identificador `_id_` 19,7 MB (en base decimal; equivalentes a 111,5 MiB en `collStats`).
 
 === Problemas que aparecieron
 
@@ -218,7 +219,9 @@ Cada edificio guardado queda con estos campos:
       [`cod_dane_mpio`], [Código del municipio PDET donde cae el edificio.],
       [`dataset_source`], [Fuente del dato: `google_open_buildings`.],
       [`centroid`], [Punto GeoJSON (longitud, latitud) del edificio. Tiene el índice espacial.],
-      [`rooftop_area_m2`], [Área de la huella, en metros cuadrados, tal como la entrega Google. Vacía (`null`) si falta.],
+      [`rooftop_area_m2`],
+      [Área de la huella, en metros cuadrados, tal como la entrega Google. Vacía (`null`) si falta.],
+
       [`confidence`], [Confianza de Google de que es un edificio. Vacía (`null`) si falta.],
       [`capture_metadata`], [Licencia, identificador de la carga y fecha en que se cargó.],
       [`source_file`], [Archivo de origen. Sirve para reanudar y para limpiar cargas a medias.],
@@ -229,9 +232,9 @@ Cada edificio guardado queda con estos campos:
 
 === Requisitos
 
-- Python 3.11 o superior, manejado con `uv`.
+- Python 3.10 o superior, manejado con `uv` (`pyproject.toml` y `uv.lock`) o mediante el `Dockerfile` del módulo.
 - Docker y Docker Compose, para el MongoDB local.
-- Librerías de Python: `geopandas`, `pandas`, `shapely` (2.0 o superior, por `contains_xy`), `pymongo` y `pyogrio`.
+- Librerías de Python: `geopandas`, `pandas`, `shapely` (2.0 o superior, por `contains_xy`), `pymongo`, `pyogrio` y `requests`.
 
 Estructura de carpetas que usa la carga:
 
@@ -255,7 +258,7 @@ dba-proj-20263/
 
 === Paso a paso
 
-+ *Levantar MongoDB.* Desde `src/2-mongo_container_test/`, con las credenciales definidas en el archivo `.env`, se inicia el contenedor (red `pdet_network`). La conexión usa una variable de entorno, para no escribir contraseñas en el código:
++ *Levantar MongoDB.* Desde `src/2-mongo_container_test/`, copiando `.env.example` a `.env` con las credenciales deseadas, se inicia el contenedor (red `pdet_network`). La conexión usa una variable de entorno, para no escribir contraseñas en el código:
 
   ```bash
   export MONGO_URI="mongodb://<usuario>:<contraseña>@localhost:27017/?authSource=admin"
@@ -263,18 +266,20 @@ dba-proj-20263/
 
 + *Preparar los municipios PDET.* Se ejecuta `prepare-pdet.py`, como se explicó en la preparación común.
 
-+ *Generar `pdet_union.geojson`.* Se disuelven los 170 municipios en una sola frontera, también según la preparación común.
++ *Generar `pdet_union.geojson`.* Se disuelven los 170 municipios en una sola frontera mediante `generate_pdet_union.py`, también según la preparación común.
 
 + *Descargar las teselas.* El script cruza las celdas S2 de Google con los límites del área de estudio y baja solo los `.csv.gz` que la tocan, dejándolos en `data/google_open_buildings/raw/`:
 
   ```bash
-  uv run src/3-google_open_buildings/download_pdet_buildings.py
+  uv run --project src/3-google_open_buildings \
+    src/3-google_open_buildings/download_pdet_buildings.py
   ```
 
 + *Ejecutar la carga.* Lee cada tesela, filtra los edificios PDET y los guarda en MongoDB:
 
   ```bash
-  uv run src/3-google_open_buildings/importer.py
+  uv run --project src/3-google_open_buildings \
+    src/3-google_open_buildings/importer.py
   ```
 
 + *Revisar el resultado.* Al terminar, el script imprime por cada archivo cuántas filas leyó, cuántas insertó y cuánto tardó. Los mismos datos quedan en la colección `etl_processed_files`.
@@ -327,10 +332,13 @@ Se aplicaron estas ideas para que la carga fuera rápida y no gastara memoria de
       [Teselas descargadas], [8], [Archivos `.csv.gz` en `raw/`.],
       [Edificios leídos], [31.499.115], [Suma de `rows_read` en `etl_processed_files`.],
       [Edificios guardados], [2.694.786 (8,6 %)], [Suma de `rows_inserted` en `etl_processed_files`.],
-      [Tiempo de la carga], [1.59 minutos], [Mensaje final del script (poner el valor real).],
-      [Tamaño de los datos sin comprimir], [1.040 MB], [`db.buildings_google.stats()`.],
-      [Espacio en disco], [184 MB], [`db.buildings_google.stats()`.],
-      [Espacio de los índices], [134 MB], [`db.buildings_google.stats()`.],
+      [Tiempo de la carga],
+      [1,59 minutos],
+      [Tiempo total de ejecución reportado por `importer.py` (con teselas ya en disco y 11 procesos en paralelo).],
+
+      [Tamaño de los datos sin comprimir], [1.040 MB (992,0 MiB)], [`db.buildings_google.stats()`.],
+      [Espacio en disco], [184 MB (176,3 MiB)], [`db.buildings_google.stats()`.],
+      [Espacio de los índices], [134 MB (127,7 MiB)], [`db.buildings_google.stats()`.],
     )
   ],
   caption: [Resultados de la carga de Google Open Buildings.],
@@ -352,7 +360,7 @@ Como en Microsoft, la gran mayoría de los edificios leídos (91,4 %) queda fuer
 Después de la carga se revisó lo mismo que con Microsoft:
 
 - *Conteo.* La colección `buildings_google` tiene 2.694.786 documentos, igual a la suma de `rows_inserted` en `etl_processed_files`.
-- *Índices.* Quedaron creados `centroid_2dsphere`, `mpio_area` y `source_file_1`.
+- *Índices.* Quedaron creados `centroid_2dsphere`, `mpio_area` y `source_file_1` (además de `_id_`).
 - *Cobertura.* 165 de los 170 municipios PDET tienen edificios. Los cinco que faltan se explican en "Cosas a tener en cuenta".
 
 == Microsoft y Google: en qué se parecen y en qué no
@@ -365,13 +373,19 @@ Después de la carga se revisó lo mismo que con Microsoft:
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Aspecto*], [*Microsoft*], [*Google Open Buildings*],
-      [Archivos de origen], [232 archivos por _quadkey_], [Archivos `.csv.gz` por tesela S2],
+      [Archivos de origen], [232 archivos por _quadkey_], [8 archivos `.csv.gz` por tesela S2],
       [Descarte de lo no PDET], [Por municipio, antes de guardar], [Por frontera PDET unificada, antes de guardar],
-      [Qué se guarda por edificio], [Huella, municipio, área de techo, altura, cuadro de origen], [Punto, municipio, área de techo, confianza, archivo de origen],
+      [Qué se guarda por edificio],
+      [Huella, centroide, municipio, área de techo (`EPSG:9377`), altura, cuadro de origen],
+      [Centroide, municipio, área de techo (Google), confianza, archivo de origen],
+
       [Municipio], [Se asigna al cargar (`cod_dane_mpio`)], [Se asigna al cargar (`cod_dane_mpio`)],
       [Datos vacíos], [Se guardan como `null`], [Se guardan como `null`],
       [Forma de procesar], [Un archivo a la vez, lotes de 5.000], [Varios archivos en paralelo, lotes de 50.000],
-      [Repetir la carga], [Borra la colección y la vuelve a llenar], [Salta los archivos ya cargados; `ETL_RESET=1` para empezar de cero],
+      [Repetir la carga],
+      [Borra la colección y la vuelve a llenar],
+      [Salta los archivos ya cargados; `ETL_RESET=1` para empezar de cero],
+
       [Índices], [Se crean al final], [Se crean al final],
       [Municipios PDET con edificios], [170 de 170], [165 de 170],
     )

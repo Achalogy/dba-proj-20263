@@ -278,7 +278,7 @@ def main():
     )
     parser.add_argument(
         "--db",
-        default=os.getenv("MONGO_DB", "upme_pdet"),
+        default=os.getenv("MONGO_DATABASE") or os.getenv("MONGO_DB") or "upme_pdet",
         help="Nombre de la base de datos",
     )
     parser.add_argument(
@@ -290,7 +290,9 @@ def main():
 
     inicio = time.perf_counter()
     print("=== ANÁLISIS EXPLORATORIO DE DATOS (EDA) Y AUDITORÍA ESPACIAL ===")
-    print(f"Conectando a MongoDB: {args.uri.split('@')[-1] if '@' in args.uri else args.uri} -> db: {args.db}")
+    print(
+        f"Conectando a MongoDB: {args.uri.split('@')[-1] if '@' in args.uri else args.uri} -> db: {args.db}"
+    )
 
     try:
         cliente = MongoClient(args.uri, serverSelectionTimeoutMS=5000)
@@ -303,7 +305,9 @@ def main():
     print(f"Colecciones detectadas: {colecciones}")
     for col_req in ["buildings_microsoft", "buildings_google", "municipalities_pdet"]:
         if col_req not in colecciones:
-            fallar(f"Falta la colección requerida '{col_req}' en la base de datos {args.db}.")
+            fallar(
+                f"Falta la colección requerida '{col_req}' en la base de datos {args.db}."
+            )
 
     # 1. Conteos
     print("\n1. Verificando conteo de documentos...")
@@ -318,14 +322,20 @@ def main():
     print("\n2. Ejecutando auditoría de índices espaciales (explain)...")
     verif_espacial = verificar_indices_espaciales(db)
     for k, v in verif_espacial.items():
-        print(f"  [{v['status']}] {k}: {v['index_name']} ({v['execution_time_ms']} ms, exam={v['total_docs_examined']}, ret={v['n_returned']})")
+        print(
+            f"  [{v['status']}] {k}: {v['index_name']} ({v['execution_time_ms']} ms, exam={v['total_docs_examined']}, ret={v['n_returned']})"
+        )
 
     # 3. Estadísticas de área
     print("\n3. Calculando estadísticas descriptivas de área de techos...")
     stats_area_ms = calcular_estadisticas_area(db.buildings_microsoft)
     stats_area_g = calcular_estadisticas_area(db.buildings_google)
-    print(f"  - MS Total:     {stats_area_ms['total_area_m2'] / 1e6:.2f} km² | Promedio: {stats_area_ms['avg_area_m2']:.2f} m²")
-    print(f"  - Google Total: {stats_area_g['total_area_m2'] / 1e6:.2f} km² | Promedio: {stats_area_g['avg_area_m2']:.2f} m²")
+    print(
+        f"  - MS Total:     {stats_area_ms['total_area_m2'] / 1e6:.2f} km² | Promedio: {stats_area_ms['avg_area_m2']:.2f} m²"
+    )
+    print(
+        f"  - Google Total: {stats_area_g['total_area_m2'] / 1e6:.2f} km² | Promedio: {stats_area_g['avg_area_m2']:.2f} m²"
+    )
 
     # 4. Estratos por tamaño de cubierta
     print("\n4. Agrupando edificaciones por estratos de tamaño...")
@@ -335,7 +345,9 @@ def main():
     # 5. Confianza de Google
     print("\n5. Analizando confianza en Google Open Buildings...")
     conf_g, conf_bins_g = calcular_confianza_google(db.buildings_google)
-    print(f"  - Confianza promedio: {conf_g['avg_conf'] * 100:.2f} % (mín: {conf_g['min_conf']:.2f}, máx: {conf_g['max_conf']:.2f})")
+    print(
+        f"  - Confianza promedio: {conf_g['avg_conf'] * 100:.2f} % (mín: {conf_g['min_conf']:.2f}, máx: {conf_g['max_conf']:.2f})"
+    )
 
     # 6. Agrupación municipal
     print("\n6. Consolidando estadísticas municipales y subregionales...")
@@ -409,6 +421,14 @@ def main():
     # Validar inmediatamente que json.loads() pueda leerlo sin error
     with open(out_path, "r", encoding="utf-8") as f:
         json.load(f)
+
+    fallos_espaciales = [
+        k for k, v in verif_espacial.items() if v.get("status") != "OK"
+    ]
+    if fallos_espaciales:
+        fallar(
+            f"Falló la verificación de índices espaciales: {', '.join(fallos_espaciales)}"
+        )
 
     total_tiempo = time.perf_counter() - inicio
     print(f"\n[OK] Reporte JSON válido guardado en: {out_path} ({total_tiempo:.2f} s)")
