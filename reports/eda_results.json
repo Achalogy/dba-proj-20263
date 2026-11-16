@@ -1,0 +1,919 @@
+{
+  "counts": {
+    "ms": 1761047,
+    "google": 2694786,
+    "pdet_municipalities": 170
+  },
+  "spatial_verification": {
+    "ms_geometry_2dsphere": {
+      "query": "$geoIntersects",
+      "field": "geometry",
+      "index_name": "geometry_2dsphere",
+      "winning_stage": "FETCH",
+      "input_stage": "IXSCAN",
+      "execution_time_ms": 40,
+      "total_docs_examined": 62,
+      "n_returned": 1,
+      "status": "OK"
+    },
+    "ms_centroid_2dsphere": {
+      "query": "$geoWithin ($centerSphere 1km)",
+      "field": "centroid",
+      "index_name": "centroid_2dsphere",
+      "winning_stage": "FETCH",
+      "input_stage": "IXSCAN",
+      "execution_time_ms": 17,
+      "total_docs_examined": 2519,
+      "n_returned": 1977,
+      "status": "OK"
+    },
+    "google_centroid_2dsphere": {
+      "query": "$geoWithin ($centerSphere 1km)",
+      "field": "centroid",
+      "index_name": "centroid_2dsphere",
+      "winning_stage": "FETCH",
+      "input_stage": "IXSCAN",
+      "execution_time_ms": 90,
+      "total_docs_examined": 17413,
+      "n_returned": 11604,
+      "status": "OK"
+    },
+    "compound_mpio_area": {
+      "query": "Filtro cod_dane_mpio + rooftop_area_m2 >= 100",
+      "index_name": "mpio_area",
+      "winning_stage": "FETCH",
+      "input_stage": "IXSCAN",
+      "execution_time_ms": 128,
+      "total_docs_examined": 33971,
+      "n_returned": 33971,
+      "status": "OK"
+    }
+  },
+  "almacenamiento": {
+    "buildings_microsoft": {
+      "size_mb": 973.02,
+      "storage_size_mb": 247.99,
+      "total_index_size_mb": 111.54,
+      "avg_obj_size_bytes": 579,
+      "index_sizes": {
+        "_id_": 19705856,
+        "centroid_2dsphere": 27217920,
+        "mpio_area": 29618176,
+        "quadkey_1": 8720384,
+        "geometry_2dsphere": 31690752
+      }
+    },
+    "buildings_google": {
+      "size_mb": 992.0,
+      "storage_size_mb": 176.25,
+      "total_index_size_mb": 127.68,
+      "avg_obj_size_bytes": 386,
+      "index_sizes": {
+        "_id_": 29986816,
+        "centroid_2dsphere": 41623552,
+        "mpio_area": 49369088,
+        "source_file_1": 12902400
+      }
+    }
+  },
+  "stats_area_ms": {
+    "_id": null,
+    "total_area_m2": 221128014.03,
+    "avg_area_m2": 125.56621943082723,
+    "min_area_m2": 9.69,
+    "max_area_m2": 44667.17,
+    "std_area_m2": 234.2751836123624
+  },
+  "stats_area_g": {
+    "_id": null,
+    "total_area_m2": 223007502.1792,
+    "avg_area_m2": 82.75518062629092,
+    "min_area_m2": 2.5141,
+    "max_area_m2": 20916.6964,
+    "std_area_m2": 125.85917536261192
+  },
+  "conf_g": {
+    "_id": null,
+    "avg_conf": 0.7796497999470087,
+    "min_conf": 0.65,
+    "max_conf": 0.9834,
+    "std_conf": 0.06863318409280908
+  },
+  "conf_bins_g": [
+    {
+      "_id": 0.65,
+      "count": 431340
+    },
+    {
+      "_id": 0.7,
+      "count": 512369
+    },
+    {
+      "_id": 0.75,
+      "count": 634496
+    },
+    {
+      "_id": 0.8,
+      "count": 649136
+    },
+    {
+      "_id": 0.85,
+      "count": 390962
+    },
+    {
+      "_id": 0.9,
+      "count": 76483
+    }
+  ],
+  "area_bins_ms": [
+    {
+      "_id": 0,
+      "count": 194874,
+      "total_area": 4605875.14
+    },
+    {
+      "_id": 30,
+      "count": 720299,
+      "total_area": 38501134.99
+    },
+    {
+      "_id": 80,
+      "count": 488431,
+      "total_area": 53078975.62
+    },
+    {
+      "_id": 150,
+      "count": 310370,
+      "total_area": 74291214.37
+    },
+    {
+      "_id": 500,
+      "count": 47073,
+      "total_area": 50650813.91
+    }
+  ],
+  "area_bins_g": [
+    {
+      "_id": 0,
+      "count": 652674,
+      "total_area": 12095819.0255
+    },
+    {
+      "_id": 30,
+      "count": 1095784,
+      "total_area": 57623390.456
+    },
+    {
+      "_id": 80,
+      "count": 634334,
+      "total_area": 68289405.9581
+    },
+    {
+      "_id": 150,
+      "count": 290939,
+      "total_area": 65617279.0948
+    },
+    {
+      "_id": 500,
+      "count": 21055,
+      "total_area": 19381607.6448
+    }
+  ],
+  "mpios_count": {
+    "ms": 170,
+    "google": 165
+  },
+  "missing_in_g": [
+    {
+      "_id": "27099",
+      "count": 2004,
+      "total_area_m2": 172832.0,
+      "avg_area_m2": 86.2435129740519,
+      "cod_dane_mpio": "27099",
+      "municipio": "BOJAYÁ",
+      "departamento": "CHOCÓ",
+      "subregion_id": 5,
+      "subregion_nombre": "CHOCÓ"
+    },
+    {
+      "_id": "27450",
+      "count": 1627,
+      "total_area_m2": 155031.27,
+      "avg_area_m2": 95.28658266748616,
+      "cod_dane_mpio": "27450",
+      "municipio": "MEDIO SAN JUAN",
+      "departamento": "CHOCÓ",
+      "subregion_id": 5,
+      "subregion_nombre": "CHOCÓ"
+    },
+    {
+      "_id": "27491",
+      "count": 1403,
+      "total_area_m2": 138295.6,
+      "avg_area_m2": 98.57134711332859,
+      "cod_dane_mpio": "27491",
+      "municipio": "NÓVITA",
+      "departamento": "CHOCÓ",
+      "subregion_id": 5,
+      "subregion_nombre": "CHOCÓ"
+    },
+    {
+      "_id": "05475",
+      "count": 1331,
+      "total_area_m2": 110248.67,
+      "avg_area_m2": 82.83145755071375,
+      "cod_dane_mpio": "05475",
+      "municipio": "MURINDÓ",
+      "departamento": "ANTIOQUIA",
+      "subregion_id": 5,
+      "subregion_nombre": "CHOCÓ"
+    },
+    {
+      "_id": "05873",
+      "count": 1714,
+      "total_area_m2": 162763.46,
+      "avg_area_m2": 94.96117852975496,
+      "cod_dane_mpio": "05873",
+      "municipio": "VIGÍA DEL FUERTE",
+      "departamento": "ANTIOQUIA",
+      "subregion_id": 5,
+      "subregion_nombre": "CHOCÓ"
+    }
+  ],
+  "top10_count_ms": [
+    {
+      "_id": "47001",
+      "count": 67664,
+      "total_area_m2": 14210152.95,
+      "avg_area_m2": 210.0105366221329,
+      "cod_dane_mpio": "47001",
+      "municipio": "SANTA MARTA",
+      "departamento": "MAGDALENA",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "20001",
+      "count": 63722,
+      "total_area_m2": 13511010.25,
+      "avg_area_m2": 212.0305428266533,
+      "cod_dane_mpio": "20001",
+      "municipio": "VALLEDUPAR",
+      "departamento": "CESAR",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "05837",
+      "count": 43360,
+      "total_area_m2": 4661679.27,
+      "avg_area_m2": 107.51105327490774,
+      "cod_dane_mpio": "05837",
+      "municipio": "TURBO",
+      "departamento": "ANTIOQUIA",
+      "subregion_id": 16,
+      "subregion_nombre": "URABÁ ANTIOQUEÑO"
+    },
+    {
+      "_id": "52835",
+      "count": 41423,
+      "total_area_m2": 4524706.93,
+      "avg_area_m2": 109.23175361514134,
+      "cod_dane_mpio": "52835",
+      "municipio": "SAN ANDRÉS DE TUMACO",
+      "departamento": "NARIÑO",
+      "subregion_id": 10,
+      "subregion_nombre": "PACÍFICO Y FRONTERA NARIÑENSE"
+    },
+    {
+      "_id": "54810",
+      "count": 35478,
+      "total_area_m2": 3569506.51,
+      "avg_area_m2": 100.61183014826089,
+      "cod_dane_mpio": "54810",
+      "municipio": "TIBÚ",
+      "departamento": "NORTE DE SANTANDER",
+      "subregion_id": 4,
+      "subregion_nombre": "CATATUMBO"
+    },
+    {
+      "_id": "19256",
+      "count": 34366,
+      "total_area_m2": 3051937.18,
+      "avg_area_m2": 88.80687830995753,
+      "cod_dane_mpio": "19256",
+      "municipio": "EL TAMBO",
+      "departamento": "CAUCA",
+      "subregion_id": 1,
+      "subregion_nombre": "ALTO PATÍA Y NORTE DEL CAUCA"
+    },
+    {
+      "_id": "76109",
+      "count": 33106,
+      "total_area_m2": 7148483.69,
+      "avg_area_m2": 215.92713375218995,
+      "cod_dane_mpio": "76109",
+      "municipio": "BUENAVENTURA",
+      "departamento": "VALLE DEL CAUCA",
+      "subregion_id": 9,
+      "subregion_nombre": "PACÍFICO MEDIO"
+    },
+    {
+      "_id": "19698",
+      "count": 30843,
+      "total_area_m2": 4236067.8,
+      "avg_area_m2": 137.34292384009336,
+      "cod_dane_mpio": "19698",
+      "municipio": "SANTANDER DE QUILICHAO",
+      "departamento": "CAUCA",
+      "subregion_id": 1,
+      "subregion_nombre": "ALTO PATÍA Y NORTE DEL CAUCA"
+    },
+    {
+      "_id": "23807",
+      "count": 30255,
+      "total_area_m2": 2974867.95,
+      "avg_area_m2": 98.32648983639069,
+      "cod_dane_mpio": "23807",
+      "municipio": "TIERRALTA",
+      "departamento": "CÓRDOBA",
+      "subregion_id": 14,
+      "subregion_nombre": "SUR DE CÓRDOBA"
+    },
+    {
+      "_id": "81065",
+      "count": 27815,
+      "total_area_m2": 3317195.62,
+      "avg_area_m2": 119.25923494517347,
+      "cod_dane_mpio": "81065",
+      "municipio": "ARAUQUITA",
+      "departamento": "ARAUCA",
+      "subregion_id": 2,
+      "subregion_nombre": "ARAUCA"
+    }
+  ],
+  "top10_count_g": [
+    {
+      "_id": "47001",
+      "count": 183652,
+      "total_area_m2": 16049617.7761,
+      "avg_area_m2": 87.39146742807048,
+      "cod_dane_mpio": "47001",
+      "municipio": "SANTA MARTA",
+      "departamento": "MAGDALENA",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "20001",
+      "count": 171425,
+      "total_area_m2": 15392427.6041,
+      "avg_area_m2": 89.79103167040981,
+      "cod_dane_mpio": "20001",
+      "municipio": "VALLEDUPAR",
+      "departamento": "CESAR",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "76109",
+      "count": 103890,
+      "total_area_m2": 7666563.9397,
+      "avg_area_m2": 73.79501337664838,
+      "cod_dane_mpio": "76109",
+      "municipio": "BUENAVENTURA",
+      "departamento": "VALLE DEL CAUCA",
+      "subregion_id": 9,
+      "subregion_nombre": "PACÍFICO MEDIO"
+    },
+    {
+      "_id": "05837",
+      "count": 78927,
+      "total_area_m2": 6047187.2833,
+      "avg_area_m2": 76.61747289647396,
+      "cod_dane_mpio": "05837",
+      "municipio": "TURBO",
+      "departamento": "ANTIOQUIA",
+      "subregion_id": 16,
+      "subregion_nombre": "URABÁ ANTIOQUEÑO"
+    },
+    {
+      "_id": "18001",
+      "count": 58135,
+      "total_area_m2": 7363355.283,
+      "avg_area_m2": 126.65959031564462,
+      "cod_dane_mpio": "18001",
+      "municipio": "FLORENCIA",
+      "departamento": "CAQUETÁ",
+      "subregion_id": 6,
+      "subregion_nombre": "CUENCA DEL CAGUÁN Y PIEDEMONTE CAQUETEÑO"
+    },
+    {
+      "_id": "52835",
+      "count": 50493,
+      "total_area_m2": 3778356.0161,
+      "avg_area_m2": 74.829303390569,
+      "cod_dane_mpio": "52835",
+      "municipio": "SAN ANDRÉS DE TUMACO",
+      "departamento": "NARIÑO",
+      "subregion_id": 10,
+      "subregion_nombre": "PACÍFICO Y FRONTERA NARIÑENSE"
+    },
+    {
+      "_id": "23807",
+      "count": 43123,
+      "total_area_m2": 3087942.1497,
+      "avg_area_m2": 71.60777658558078,
+      "cod_dane_mpio": "23807",
+      "municipio": "TIERRALTA",
+      "departamento": "CÓRDOBA",
+      "subregion_id": 14,
+      "subregion_nombre": "SUR DE CÓRDOBA"
+    },
+    {
+      "_id": "47189",
+      "count": 42068,
+      "total_area_m2": 3976137.6052,
+      "avg_area_m2": 94.51691559380052,
+      "cod_dane_mpio": "47189",
+      "municipio": "CIÉNAGA",
+      "departamento": "MAGDALENA",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "19130",
+      "count": 41281,
+      "total_area_m2": 2578857.7239,
+      "avg_area_m2": 62.470815239456414,
+      "cod_dane_mpio": "19130",
+      "municipio": "CAJIBÍO",
+      "departamento": "CAUCA",
+      "subregion_id": 1,
+      "subregion_nombre": "ALTO PATÍA Y NORTE DEL CAUCA"
+    },
+    {
+      "_id": "19256",
+      "count": 38900,
+      "total_area_m2": 2452837.0682,
+      "avg_area_m2": 63.05493748586119,
+      "cod_dane_mpio": "19256",
+      "municipio": "EL TAMBO",
+      "departamento": "CAUCA",
+      "subregion_id": 1,
+      "subregion_nombre": "ALTO PATÍA Y NORTE DEL CAUCA"
+    }
+  ],
+  "top10_area_ms": [
+    {
+      "_id": "47001",
+      "count": 67664,
+      "total_area_m2": 14210152.95,
+      "avg_area_m2": 210.0105366221329,
+      "cod_dane_mpio": "47001",
+      "municipio": "SANTA MARTA",
+      "departamento": "MAGDALENA",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "20001",
+      "count": 63722,
+      "total_area_m2": 13511010.25,
+      "avg_area_m2": 212.0305428266533,
+      "cod_dane_mpio": "20001",
+      "municipio": "VALLEDUPAR",
+      "departamento": "CESAR",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "76109",
+      "count": 33106,
+      "total_area_m2": 7148483.69,
+      "avg_area_m2": 215.92713375218995,
+      "cod_dane_mpio": "76109",
+      "municipio": "BUENAVENTURA",
+      "departamento": "VALLE DEL CAUCA",
+      "subregion_id": 9,
+      "subregion_nombre": "PACÍFICO MEDIO"
+    },
+    {
+      "_id": "18001",
+      "count": 26897,
+      "total_area_m2": 6687834.83,
+      "avg_area_m2": 248.64612521842585,
+      "cod_dane_mpio": "18001",
+      "municipio": "FLORENCIA",
+      "departamento": "CAQUETÁ",
+      "subregion_id": 6,
+      "subregion_nombre": "CUENCA DEL CAGUÁN Y PIEDEMONTE CAQUETEÑO"
+    },
+    {
+      "_id": "05837",
+      "count": 43360,
+      "total_area_m2": 4661679.27,
+      "avg_area_m2": 107.51105327490774,
+      "cod_dane_mpio": "05837",
+      "municipio": "TURBO",
+      "departamento": "ANTIOQUIA",
+      "subregion_id": 16,
+      "subregion_nombre": "URABÁ ANTIOQUEÑO"
+    },
+    {
+      "_id": "52835",
+      "count": 41423,
+      "total_area_m2": 4524706.93,
+      "avg_area_m2": 109.23175361514134,
+      "cod_dane_mpio": "52835",
+      "municipio": "SAN ANDRÉS DE TUMACO",
+      "departamento": "NARIÑO",
+      "subregion_id": 10,
+      "subregion_nombre": "PACÍFICO Y FRONTERA NARIÑENSE"
+    },
+    {
+      "_id": "19698",
+      "count": 30843,
+      "total_area_m2": 4236067.8,
+      "avg_area_m2": 137.34292384009336,
+      "cod_dane_mpio": "19698",
+      "municipio": "SANTANDER DE QUILICHAO",
+      "departamento": "CAUCA",
+      "subregion_id": 1,
+      "subregion_nombre": "ALTO PATÍA Y NORTE DEL CAUCA"
+    },
+    {
+      "_id": "18753",
+      "count": 23587,
+      "total_area_m2": 3756474.14,
+      "avg_area_m2": 159.26036121592404,
+      "cod_dane_mpio": "18753",
+      "municipio": "SAN VICENTE DEL CAGUÁN",
+      "departamento": "CAQUETÁ",
+      "subregion_id": 6,
+      "subregion_nombre": "CUENCA DEL CAGUÁN Y PIEDEMONTE CAQUETEÑO"
+    },
+    {
+      "_id": "54810",
+      "count": 35478,
+      "total_area_m2": 3569506.51,
+      "avg_area_m2": 100.61183014826089,
+      "cod_dane_mpio": "54810",
+      "municipio": "TIBÚ",
+      "departamento": "NORTE DE SANTANDER",
+      "subregion_id": 4,
+      "subregion_nombre": "CATATUMBO"
+    },
+    {
+      "_id": "47189",
+      "count": 21991,
+      "total_area_m2": 3474044.65,
+      "avg_area_m2": 157.97574689645765,
+      "cod_dane_mpio": "47189",
+      "municipio": "CIÉNAGA",
+      "departamento": "MAGDALENA",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    }
+  ],
+  "top10_area_g": [
+    {
+      "_id": "47001",
+      "count": 183652,
+      "total_area_m2": 16049617.7761,
+      "avg_area_m2": 87.39146742807048,
+      "cod_dane_mpio": "47001",
+      "municipio": "SANTA MARTA",
+      "departamento": "MAGDALENA",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "20001",
+      "count": 171425,
+      "total_area_m2": 15392427.6041,
+      "avg_area_m2": 89.79103167040981,
+      "cod_dane_mpio": "20001",
+      "municipio": "VALLEDUPAR",
+      "departamento": "CESAR",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "76109",
+      "count": 103890,
+      "total_area_m2": 7666563.9397,
+      "avg_area_m2": 73.79501337664838,
+      "cod_dane_mpio": "76109",
+      "municipio": "BUENAVENTURA",
+      "departamento": "VALLE DEL CAUCA",
+      "subregion_id": 9,
+      "subregion_nombre": "PACÍFICO MEDIO"
+    },
+    {
+      "_id": "18001",
+      "count": 58135,
+      "total_area_m2": 7363355.283,
+      "avg_area_m2": 126.65959031564462,
+      "cod_dane_mpio": "18001",
+      "municipio": "FLORENCIA",
+      "departamento": "CAQUETÁ",
+      "subregion_id": 6,
+      "subregion_nombre": "CUENCA DEL CAGUÁN Y PIEDEMONTE CAQUETEÑO"
+    },
+    {
+      "_id": "05837",
+      "count": 78927,
+      "total_area_m2": 6047187.2833,
+      "avg_area_m2": 76.61747289647396,
+      "cod_dane_mpio": "05837",
+      "municipio": "TURBO",
+      "departamento": "ANTIOQUIA",
+      "subregion_id": 16,
+      "subregion_nombre": "URABÁ ANTIOQUEÑO"
+    },
+    {
+      "_id": "47189",
+      "count": 42068,
+      "total_area_m2": 3976137.6052,
+      "avg_area_m2": 94.51691559380052,
+      "cod_dane_mpio": "47189",
+      "municipio": "CIÉNAGA",
+      "departamento": "MAGDALENA",
+      "subregion_id": 12,
+      "subregion_nombre": "SIERRA NEVADA - PERIJÁ"
+    },
+    {
+      "_id": "19698",
+      "count": 35691,
+      "total_area_m2": 3851788.6838,
+      "avg_area_m2": 107.92044727802528,
+      "cod_dane_mpio": "19698",
+      "municipio": "SANTANDER DE QUILICHAO",
+      "departamento": "CAUCA",
+      "subregion_id": 1,
+      "subregion_nombre": "ALTO PATÍA Y NORTE DEL CAUCA"
+    },
+    {
+      "_id": "52835",
+      "count": 50493,
+      "total_area_m2": 3778356.0161,
+      "avg_area_m2": 74.829303390569,
+      "cod_dane_mpio": "52835",
+      "municipio": "SAN ANDRÉS DE TUMACO",
+      "departamento": "NARIÑO",
+      "subregion_id": 10,
+      "subregion_nombre": "PACÍFICO Y FRONTERA NARIÑENSE"
+    },
+    {
+      "_id": "05045",
+      "count": 36337,
+      "total_area_m2": 3606578.248,
+      "avg_area_m2": 99.2536050857253,
+      "cod_dane_mpio": "05045",
+      "municipio": "APARTADÓ",
+      "departamento": "ANTIOQUIA",
+      "subregion_id": 16,
+      "subregion_nombre": "URABÁ ANTIOQUEÑO"
+    },
+    {
+      "_id": "81794",
+      "count": 35958,
+      "total_area_m2": 3200497.2315,
+      "avg_area_m2": 89.00654184048057,
+      "cod_dane_mpio": "81794",
+      "municipio": "TAME",
+      "departamento": "ARAUCA",
+      "subregion_id": 2,
+      "subregion_nombre": "ARAUCA"
+    }
+  ],
+  "subregions_ms": [
+    {
+      "id": 1,
+      "nombre": "ALTO PATÍA Y NORTE DEL CAUCA",
+      "count": 271668,
+      "total_area_m2": 30357903.28,
+      "mpios": 24
+    },
+    {
+      "id": 2,
+      "nombre": "ARAUCA",
+      "count": 74675,
+      "total_area_m2": 10196032.47,
+      "mpios": 4
+    },
+    {
+      "id": 3,
+      "nombre": "BAJO CAUCA Y NORDESTE ANTIOQUEÑO",
+      "count": 102406,
+      "total_area_m2": 10693466.719999999,
+      "mpios": 13
+    },
+    {
+      "id": 4,
+      "nombre": "CATATUMBO",
+      "count": 89632,
+      "total_area_m2": 9218525.82,
+      "mpios": 8
+    },
+    {
+      "id": 5,
+      "nombre": "CHOCÓ",
+      "count": 37692,
+      "total_area_m2": 3425103.62,
+      "mpios": 14
+    },
+    {
+      "id": 6,
+      "nombre": "CUENCA DEL CAGUÁN Y PIEDEMONTE CAQUETEÑO",
+      "count": 133941,
+      "total_area_m2": 22573181.27,
+      "mpios": 17
+    },
+    {
+      "id": 7,
+      "nombre": "MACARENA - GUAVIARE",
+      "count": 94110,
+      "total_area_m2": 11485555.149999999,
+      "mpios": 12
+    },
+    {
+      "id": 8,
+      "nombre": "MONTES DE MARÍA",
+      "count": 129388,
+      "total_area_m2": 11821192.289999997,
+      "mpios": 15
+    },
+    {
+      "id": 9,
+      "nombre": "PACÍFICO MEDIO",
+      "count": 49596,
+      "total_area_m2": 8784713.280000001,
+      "mpios": 4
+    },
+    {
+      "id": 10,
+      "nombre": "PACÍFICO Y FRONTERA NARIÑENSE",
+      "count": 79144,
+      "total_area_m2": 8173511.340000001,
+      "mpios": 11
+    },
+    {
+      "id": 11,
+      "nombre": "PUTUMAYO",
+      "count": 108450,
+      "total_area_m2": 13858693.83,
+      "mpios": 9
+    },
+    {
+      "id": 12,
+      "nombre": "SIERRA NEVADA - PERIJÁ",
+      "count": 295383,
+      "total_area_m2": 46266171.93,
+      "mpios": 15
+    },
+    {
+      "id": 13,
+      "nombre": "SUR DE BOLÍVAR",
+      "count": 52856,
+      "total_area_m2": 5835706.57,
+      "mpios": 7
+    },
+    {
+      "id": 14,
+      "nombre": "SUR DE CÓRDOBA",
+      "count": 80634,
+      "total_area_m2": 8331891.0,
+      "mpios": 5
+    },
+    {
+      "id": 15,
+      "nombre": "SUR DEL TOLIMA",
+      "count": 48072,
+      "total_area_m2": 4765049.4399999995,
+      "mpios": 4
+    },
+    {
+      "id": 16,
+      "nombre": "URABÁ ANTIOQUEÑO",
+      "count": 113400,
+      "total_area_m2": 15341316.020000001,
+      "mpios": 8
+    }
+  ],
+  "subregions_g": [
+    {
+      "id": 1,
+      "nombre": "ALTO PATÍA Y NORTE DEL CAUCA",
+      "count": 388378,
+      "total_area_m2": 30917857.9818,
+      "mpios": 24
+    },
+    {
+      "id": 2,
+      "nombre": "ARAUCA",
+      "count": 111739,
+      "total_area_m2": 9473580.717600001,
+      "mpios": 4
+    },
+    {
+      "id": 3,
+      "nombre": "BAJO CAUCA Y NORDESTE ANTIOQUEÑO",
+      "count": 142783,
+      "total_area_m2": 10956730.039,
+      "mpios": 13
+    },
+    {
+      "id": 4,
+      "nombre": "CATATUMBO",
+      "count": 104279,
+      "total_area_m2": 8261073.749600001,
+      "mpios": 8
+    },
+    {
+      "id": 5,
+      "nombre": "CHOCÓ",
+      "count": 20722,
+      "total_area_m2": 1731031.0335000001,
+      "mpios": 9
+    },
+    {
+      "id": 6,
+      "nombre": "CUENCA DEL CAGUÁN Y PIEDEMONTE CAQUETEÑO",
+      "count": 182694,
+      "total_area_m2": 21019068.1455,
+      "mpios": 17
+    },
+    {
+      "id": 7,
+      "nombre": "MACARENA - GUAVIARE",
+      "count": 113455,
+      "total_area_m2": 10231516.9669,
+      "mpios": 12
+    },
+    {
+      "id": 8,
+      "nombre": "MONTES DE MARÍA",
+      "count": 215874,
+      "total_area_m2": 14290094.4315,
+      "mpios": 15
+    },
+    {
+      "id": 9,
+      "nombre": "PACÍFICO MEDIO",
+      "count": 116255,
+      "total_area_m2": 8654794.247,
+      "mpios": 4
+    },
+    {
+      "id": 10,
+      "nombre": "PACÍFICO Y FRONTERA NARIÑENSE",
+      "count": 71020,
+      "total_area_m2": 5283644.0846,
+      "mpios": 11
+    },
+    {
+      "id": 11,
+      "nombre": "PUTUMAYO",
+      "count": 136711,
+      "total_area_m2": 12608782.958600001,
+      "mpios": 9
+    },
+    {
+      "id": 12,
+      "nombre": "SIERRA NEVADA - PERIJÁ",
+      "count": 645009,
+      "total_area_m2": 53754351.21520001,
+      "mpios": 15
+    },
+    {
+      "id": 13,
+      "nombre": "SUR DE BOLÍVAR",
+      "count": 80076,
+      "total_area_m2": 6059889.3058,
+      "mpios": 7
+    },
+    {
+      "id": 14,
+      "nombre": "SUR DE CÓRDOBA",
+      "count": 114887,
+      "total_area_m2": 8725475.959200002,
+      "mpios": 5
+    },
+    {
+      "id": 15,
+      "nombre": "SUR DEL TOLIMA",
+      "count": 32662,
+      "total_area_m2": 2811036.1958,
+      "mpios": 4
+    },
+    {
+      "id": 16,
+      "nombre": "URABÁ ANTIOQUEÑO",
+      "count": 218242,
+      "total_area_m2": 18228575.147600003,
+      "mpios": 8
+    }
+  ]
+}
