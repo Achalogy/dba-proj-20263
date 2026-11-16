@@ -27,9 +27,8 @@ from shapely.geometry import shape
 # ----------------------------------------------------------------------
 # Configuración
 # ----------------------------------------------------------------------
-MONGO_URI = os.getenv(
-    MONGO_URI = os.environ["MONGO_URI"]
-)
+MONGO_URI = os.environ["MONGO_URI"]
+
 DATABASE_NAME = "upme_pdet"
 COLLECTION_NAME = "buildings_google"
 CONTROL_COLLECTION = "etl_processed_files"

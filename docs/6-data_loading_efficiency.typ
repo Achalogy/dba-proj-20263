@@ -327,7 +327,7 @@ Se aplicaron estas ideas para que la carga fuera rápida y no gastara memoria de
       [Teselas descargadas], [8], [Archivos `.csv.gz` en `raw/`.],
       [Edificios leídos], [31.499.115], [Suma de `rows_read` en `etl_processed_files`.],
       [Edificios guardados], [2.694.786 (8,6 %)], [Suma de `rows_inserted` en `etl_processed_files`.],
-      [Tiempo de la carga], [0.7021930654843648 minutos], [Mensaje final del script (poner el valor real).],
+      [Tiempo de la carga], [1.59 minutos], [Mensaje final del script (poner el valor real).],
       [Tamaño de los datos sin comprimir], [1.040 MB], [`db.buildings_google.stats()`.],
       [Espacio en disco], [184 MB], [`db.buildings_google.stats()`.],
       [Espacio de los índices], [134 MB], [`db.buildings_google.stats()`.],
