@@ -1,0 +1,28 @@
+{
+  "tag": "completa",
+  "batch_size": 5000,
+  "index_first": false,
+  "dry_run": false,
+  "leidos": 8221407,
+  "descartados_geometria": 0,
+  "fuera_pdet": 6460360,
+  "insertados": 1761047,
+  "errores_insercion": 0,
+  "archivos": 232,
+  "segundos": {
+    "descarga": 671.6,
+    "lectura": 898.0,
+    "proceso": 767.9,
+    "insercion": 63.8,
+    "indices": 45.1,
+    "total": 2446.7
+  },
+  "docs_por_segundo": 720,
+  "memoria_pico_mb": 763,
+  "almacenamiento": {
+    "tamano_logico_mb": 1020.3,
+    "en_disco_mb": 259.7,
+    "indices_mb": 117.0,
+    "documentos": 1761047
+  }
+}

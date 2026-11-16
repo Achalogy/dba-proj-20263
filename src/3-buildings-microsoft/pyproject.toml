@@ -1,0 +1,12 @@
+[project]
+name = "3-buildings-microsoft"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "geopandas>=1.0.1",
+    "pandas>=2.3.3",
+    "psutil>=5.9",
+    "pymongo>=4.18.3",
+    "pyogrio>=0.11.1",
+    "shapely>=2",
+]
