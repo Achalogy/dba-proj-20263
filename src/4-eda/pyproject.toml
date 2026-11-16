@@ -1,0 +1,8 @@
+[project]
+name = "4-eda"
+version = "0.1.0"
+description = "Análisis exploratorio de datos (EDA) y verificación de índices espaciales en MongoDB"
+requires-python = ">=3.10"
+dependencies = [
+    "pymongo>=4.10.0",
+]

@@ -23,14 +23,14 @@ La base de datos NoSQL `upme_pdet` integra un total consolidado de *4.455.833 ed
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Métrica General*], [*Microsoft Buildings*], [*Google Open Buildings*], [*Comparación / Relación*],
-      [Edificaciones detectadas], [1.761.047], [2.694.786], [Google detecta 1,53×times× más],
+      [Edificaciones detectadas], [1.761.047], [2.694.786], [Google detecta 1,53× más],
       [Municipios cubiertos], [170 de 170 (100 %)], [165 de 170 (97,1 %)], [5 municipios sin datos en Google],
-      [Área total estimada (×mkm²)], [221.128.014,03], [223.007.502,18], [Diferencia de apenas *0,85 %*],
-      [Área total estimada (×kmkm²)], [*221,13 ×kmkm²*], [*223,01 ×kmkm²*], [Discrepancia de 1,88 ×kmkm²],
-      [Área promedio por techo], [125,57 ×mkm²], [82,76 ×mkm²], [Microsoft 1,52×times× mayor],
-      [Desviación estándar (×mkm²)], [234,28 ×mkm²], [125,86 ×mkm²], [Mayor dispersión en Microsoft],
-      [Área mínima registrada], [9,69 ×mkm²], [2,51 ×mkm²], [Google detecta micro-techos],
-      [Área máxima registrada], [44.667,17 ×mkm²], [20.916,70 ×mkm²], [Galpones / complejos industriales],
+      [Área total estimada (m²)], [221.128.014,03], [223.007.502,18], [Diferencia de apenas *0,85 %*],
+      [Área total estimada (km²)], [*221,13 km²*], [*223,01 km²*], [Discrepancia de 1,88 km²],
+      [Área promedio por techo], [125,57 m²], [82,76 m²], [Microsoft 1,52× mayor],
+      [Desviación estándar (m²)], [234,28 m²], [125,86 m²], [Mayor dispersión en Microsoft],
+      [Área mínima registrada], [9,69 m²], [2,51 m²], [Google detecta micro-techos],
+      [Área máxima registrada], [44.667,17 m²], [20.916,70 m²], [Galpones / complejos industriales],
       [Espacio lógico sin comprimir], [973,02 MB], [992,00 MB], [Volumen similar en RAM],
       [Espacio en disco (WiredTiger)], [247,99 MB], [176,25 MB], [Google más compacto (solo Point)],
       [Tamaño total de índices], [111,54 MB], [127,68 MB], [Totalmente residentes en memoria],
@@ -42,12 +42,12 @@ La base de datos NoSQL `upme_pdet` integra un total consolidado de *4.455.833 ed
 === Hallazgo Crítico: Convergencia de Área Total de Captación
 
 El resultado más destacado del análisis exploratorio es la *sorprendente convergencia en la estimación del área total de cubiertas*:
-- Microsoft estima *221,13 ×kmkm²* de techos en los municipios PDET.
-- Google Open Buildings estima *223,01 ×kmkm²*.
+- Microsoft estima *221,13 km²* de techos en los municipios PDET.
+- Google Open Buildings estima *223,01 km²*.
 
-A pesar de que Google detecta casi un millón de estructuras adicionales (+53,0 %), la diferencia neta en la superficie captadora total es de únicamente *1,88 ×kmkm² (0,85 %)*. 
+A pesar de que Google detecta casi un millón de estructuras adicionales (+53,0 %), la diferencia neta en la superficie captadora total es de únicamente *1,88 km² (0,85 %)*. 
 
-Este fenómeno se explica por la diferencia en la resolución y segmentación de los modelos de visión artificial: mientras que Google segmenta cubiertas individuales o partes modulares de una misma vivienda/edificación (generando muchas detecciones pequeñas con promedio de 82,8 ×mkm²), Microsoft tiende a fusionar huellas contiguas en polígonos consolidados (con promedio de 125,6 ×mkm²).
+Este fenómeno se explica por la diferencia en la resolución y segmentación de los modelos de visión artificial: mientras que Google segmenta cubiertas individuales o partes modulares de una misma vivienda/edificación (generando muchas detecciones pequeñas con promedio de 82,8 m²), Microsoft tiende a fusionar huellas contiguas en polígonos consolidados (con promedio de 125,6 m²).
 
 == Distribución por Rangos de Tamaño de Edificación
 
@@ -61,11 +61,11 @@ Para entender la morfología de las construcciones identificadas, se categorizar
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Categoría de Cubierta*], [*Edificios MS*], [*% MS*], [*Edificios Google*], [*% Google*],
-      [Micro / Cobertizos (< 30 ×mkm²)], [194.874], [11,07 %], [652.674], [24,22 %],
-      [Residencial Pequeño (30 - 80 ×mkm²)], [720.299], [40,90 %], [1.095.784], [40,66 %],
-      [Residencial Medio (80 - 150 ×mkm²)], [488.431], [27,74 %], [634.334], [23,54 %],
-      [Comercial / Institucional (150 - 500 ×mkm²)], [310.370], [17,62 %], [290.939], [10,80 %],
-      [Industrial / Grandes Áreas (> 500 ×mkm²)], [47.073], [2,67 %], [21.055], [0,78 %],
+      [Micro / Cobertizos (< 30 m²)], [194.874], [11,07 %], [652.674], [24,22 %],
+      [Residencial Pequeño (30 - 80 m²)], [720.299], [40,90 %], [1.095.784], [40,66 %],
+      [Residencial Medio (80 - 150 m²)], [488.431], [27,74 %], [634.334], [23,54 %],
+      [Comercial / Institucional (150 - 500 m²)], [310.370], [17,62 %], [290.939], [10,80 %],
+      [Industrial / Grandes Áreas (> 500 m²)], [47.073], [2,67 %], [21.055], [0,78 %],
       [*Total General*], [*1.761.047*], [*100,0 %*], [*2.694.786*], [*100,0 %*],
     )
   ],
@@ -73,9 +73,9 @@ Para entender la morfología de las construcciones identificadas, se categorizar
 )
 
 === Observaciones Morfológicas:
-+ *Sensibilidad en estructuras rurales pequeñas (< 30 ×mkm²):* Google detecta 652.674 estructuras en este rango (24,22 % de su total), frente a 194.874 de Microsoft. Esto refleja la capacidad del modelo de Google para detectar enramadas, silos, quioscos y pequeñas construcciones campesinas en zonas dispersas.
-+ *Núcleo residencial homogéneo (30 - 80 ×mkm²):* Ambas fuentes coinciden de manera casi exacta en la proporción de viviendas de tamaño estándar (40,90 % en Microsoft vs. 40,66 % en Google), representando el grupo dominante en los municipios PDET.
-+ *Captación de infraestructuras grandes (> 500 ×mkm²):* Microsoft detecta más del doble de estructuras industriales o institucionales que Google (47.073 vs. 21.055), debido a que no fragmenta las naves comerciales continuas. En términos de área acumulada, las edificaciones mayores a 500 ×mkm² aportan 50,65 ×kmkm² en Microsoft frente a 19,38 ×kmkm² en Google.
++ *Sensibilidad en estructuras rurales pequeñas (< 30 m²):* Google detecta 652.674 estructuras en este rango (24,22 % de su total), frente a 194.874 de Microsoft. Esto refleja la capacidad del modelo de Google para detectar enramadas, silos, quioscos y pequeñas construcciones campesinas en zonas dispersas.
++ *Núcleo residencial homogéneo (30 - 80 m²):* Ambas fuentes coinciden de manera casi exacta en la proporción de viviendas de tamaño estándar (40,90 % en Microsoft vs. 40,66 % en Google), representando el grupo dominante en los municipios PDET.
++ *Captación de infraestructuras grandes (> 500 m²):* Microsoft detecta más del doble de estructuras industriales o institucionales que Google (47.073 vs. 21.055), debido a que no fragmenta las naves comerciales continuas. En términos de área acumulada, las edificaciones mayores a 500 m² aportan 50,65 km² en Microsoft frente a 19,38 km² en Google.
 
 == Calidad, Nivel de Confianza y Atributos de Altura
 
@@ -122,13 +122,13 @@ Mientras Microsoft ofrece una cobertura completa del 100 % (170 municipios), Goo
       align: (center, left, left, right, right),
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
-      [*Código DANE*], [*Municipio*], [*Departamento*], [*Edificios en MS*], [*Área MS (×kmkm²)*],
-      [05475], [Murindó], [Antioquia], [1.331], [0,11 ×kmkm²],
-      [05873], [Vigía del Fuerte], [Antioquia], [1.714], [0,16 ×kmkm²],
-      [27450], [Medio San Juan], [Chocó], [1.627], [0,16 ×kmkm²],
-      [27491], [Nóvita], [Chocó], [1.403], [0,14 ×kmkm²],
-      [27099], [Bojayá], [Chocó], [2.004], [0,17 ×kmkm²],
-      [*Total Faltante*], [*5 municipios*], [*Antioquia / Chocó*], [*8.079*], [*0,74 ×kmkm²*],
+      [*Código DANE*], [*Municipio*], [*Departamento*], [*Edificios en MS*], [*Área MS (km²)*],
+      [05475], [Murindó], [Antioquia], [1.331], [0,11 km²],
+      [05873], [Vigía del Fuerte], [Antioquia], [1.714], [0,16 km²],
+      [27450], [Medio San Juan], [Chocó], [1.627], [0,16 km²],
+      [27491], [Nóvita], [Chocó], [1.403], [0,14 km²],
+      [27099], [Bojayá], [Chocó], [2.004], [0,17 km²],
+      [*Total Faltante*], [*5 municipios*], [*Antioquia / Chocó*], [*8.079*], [*0,74 km²*],
     )
   ],
   caption: [Municipios PDET sin presencia en Google Open Buildings y sus datos en Microsoft.],
@@ -145,7 +145,7 @@ Mientras Microsoft ofrece una cobertura completa del 100 % (170 municipios), Goo
       align: (left, left, right, right, right, right),
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
-      [*Municipio*], [*Departamento*], [*Edif. MS*], [*Edif. Google*], [*Área MS (×kmkm²)*], [*Área Google (×kmkm²)*],
+      [*Municipio*], [*Departamento*], [*Edif. MS*], [*Edif. Google*], [*Área MS (km²)*], [*Área Google (km²)*],
       [Santa Marta], [Magdalena], [67.664], [183.652], [14,21], [16,05],
       [Valledupar], [Cesar], [63.722], [171.425], [13,51], [15,39],
       [Buenaventura], [Valle del Cauca], [33.106], [103.890], [7,15], [7,67],
@@ -174,7 +174,7 @@ La consolidación espacial de las edificaciones a lo largo de las 16 subregiones
       align: (left, center, right, right, right, right),
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
-      [*Subregión PDET*], [*Mpios*], [*Edif. MS*], [*Edif. Google*], [*Área MS (×kmkm²)*], [*Área Google (×kmkm²)*],
+      [*Subregión PDET*], [*Mpios*], [*Edif. MS*], [*Edif. Google*], [*Área MS (km²)*], [*Área Google (km²)*],
       [Alto Patía y Norte del Cauca], [24], [271.668], [388.378], [30,36], [30,92],
       [Arauca], [4], [74.675], [111.739], [10,20], [9,47],
       [Bajo Cauca y Nordeste Antioqueño], [13], [102.406], [142.783], [10,69], [10,96],
@@ -198,14 +198,37 @@ La consolidación espacial de las edificaciones a lo largo de las 16 subregiones
 )
 
 === Dinámicas Subregionales Notables:
-+ *Sierra Nevada - Perijá* lidera ampliamente el potencial de área en ambas fuentes (~46,3 ×kmkm² en MS y ~53,8 ×kmkm² en Google), concentrando grandes centros urbanos como Valledupar y Santa Marta.
-+ *Alto Patía y Norte del Cauca* es la segunda subregión con mayor superficie disponible (~30,4 a 30,9 ×kmkm²), caracterizada por alta densidad de núcleos poblados rurales.
++ *Sierra Nevada - Perijá* lidera ampliamente el potencial de área en ambas fuentes (~46,3 km² en MS y ~53,8 km² en Google), concentrando grandes centros urbanos como Valledupar y Santa Marta.
++ *Alto Patía y Norte del Cauca* es la segunda subregión con mayor superficie disponible (~30,4 a 30,9 km²), caracterizada por alta densidad de núcleos poblados rurales.
 + *Chocó* y *Sur del Tolima* presentan mayores volúmenes en Microsoft, confirmando limitaciones de inferencia en Google en zonas montañosas o selváticas.
 
 == Conclusiones del EDA y Recomendaciones para la UPME
 
-+ *Robustez de la Estimación de Área:* La desviación inferior al 1 % entre ambas fuentes (221,13 vs. 223,01 ×kmkm²) otorga una validez estadística excepcional para los cálculos macro de planeación energética de la UPME.
++ *Robustez de la Estimación de Área:* La desviación inferior al 1 % entre ambas fuentes (221,13 vs. 223,01 km²) otorga una validez estadística excepcional para los cálculos macro de planeación energética de la UPME.
 + *Estrategia Híbrida Recomendada para la Fase 4:*
   - Utilizar *Google Open Buildings* para conteo de edificaciones residenciales y caracterización de pequeños núcleos rurales dispersos.
-  - Utilizar *Microsoft Building Footprints* para el modelado poligonal exacto, grandes superficies comerciales/industriales (> 500 ×mkm²) y para cubrir los 5 municipios del Chocó omitidos por Google.
-+ *Potencial Energético:* Con más de 220 ×kmkm² de techos identificados, los municipios PDET presentan un potencial bruto de generación solar fotovoltaica en cubiertas del orden de gigavatios instalables, abriendo oportunidades estratégicas para comunidades energéticas y proyectos de transición justa.
+  - Utilizar *Microsoft Building Footprints* para el modelado poligonal exacto, grandes superficies comerciales/industriales (> 500 m²) y para cubrir los 5 municipios del Chocó omitidos por Google.
++ *Potencial Energético:* Con más de 220 km² de techos identificados, los municipios PDET presentan un potencial bruto de generación solar fotovoltaica en cubiertas del orden de gigavatios instalables, abriendo oportunidades estratégicas para comunidades energéticas y proyectos de transición justa.
+
+== Reproducibilidad del Análisis (Script `src/4-eda/eda.py`)
+
+Para garantizar que todas las cifras, tablas y validaciones expuestas en este documento sean 100 % reproducibles de manera autónoma, se implementó el script ejecutable `src/4-eda/eda.py`. El script automatiza el flujo completo:
++ Conexión parametrizable a MongoDB mediante la variable de entorno `MONGO_URI` o el argumento `--uri`.
++ Ejecución de las pruebas de auditoría y rendimiento sobre los índices espaciales (`geometry_2dsphere`, `centroid_2dsphere` y `mpio_area`) mediante el comando administrativo `explain(executionStats)`.
++ Ejecución optimizada de los pipelines de agregación sobre los 4,45 millones de documentos en las colecciones `buildings_microsoft` y `buildings_google`.
++ Generación y guardado del archivo consolidado `reports/eda_results.json` en formato JSON estrictamente válido, verificado programáticamente con `json.load()`.
+
+=== Instrucciones de Ejecución
+
+Desde la raíz del repositorio, el análisis se reproduce ejecutando:
+
+```bash
+python src/4-eda/eda.py
+```
+
+O utilizando el gestor de entornos `uv`:
+
+```bash
+uv run --project src/4-eda python src/4-eda/eda.py
+```
+
