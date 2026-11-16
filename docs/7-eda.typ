@@ -200,8 +200,8 @@ La consolidación espacial de las edificaciones a lo largo de las 16 subregiones
 )
 
 === Dinámicas Subregionales Notables:
-+ *Sierra Nevada - Perijá* lidera ampliamente el potencial de área en ambas fuentes (~46,3 km² en MS y ~53,8 km² en Google), concentrando grandes centros urbanos como Valledupar y Santa Marta.
-+ *Alto Patía y Norte del Cauca* es la segunda subregión con mayor superficie disponible (~30,4 a 30,9 km²), caracterizada por alta densidad de núcleos poblados rurales.
++ *Sierra Nevada - Perijá* lidera ampliamente el potencial de área en ambas fuentes (\~46,3 km² en MS y \~53,8 km² en Google), concentrando grandes centros urbanos como Valledupar y Santa Marta.
++ *Alto Patía y Norte del Cauca* es la segunda subregión con mayor superficie disponible (\~30,4 a 30,9 km²), caracterizada por alta densidad de núcleos poblados rurales.
 + *Chocó* y *Sur del Tolima* presentan mayores volúmenes en Microsoft, confirmando limitaciones de inferencia en Google en zonas montañosas o selváticas.
 
 == Conclusiones del EDA y Recomendaciones para la UPME

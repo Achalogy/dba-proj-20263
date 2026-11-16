@@ -260,9 +260,9 @@ Tras la ingestión de los conjuntos masivos de huellas de construcciones (`build
 === Catálogo de Índices Implementados
 
 #figure(
-  text(size: 10pt)[
+  text(size: 9pt)[
     #table(
-      columns: (1.4fr, 1.3fr, 1.1fr, 0.9fr, 2.3fr),
+      columns: (1.55fr, 1.45fr, 1fr, 0.9fr, 2.1fr),
       align: (left, left, center, right, left),
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },

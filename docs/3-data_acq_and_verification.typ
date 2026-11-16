@@ -129,7 +129,7 @@ Para la Fase 3 se aplicaron los mismos principios de adquisición trazable y con
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Aspecto*], [*DANE MGN2025*], [*Microsoft Buildings*], [*Google Open Buildings V3*],
       [Mecanismo de descarga],
-      [Manual (ZIP ~3,2 GB)],
+      [Manual (ZIP \~3,2 GB)],
       [Script automático (`dataset-links.csv`, 232 `.csv.gz`, 0,63 GB)],
       [Descarga selectiva por intersección con `pdet_union.geojson` (8 teselas S2 `.csv.gz`)],
 
