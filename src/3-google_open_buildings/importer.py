@@ -28,7 +28,7 @@ from shapely.geometry import shape
 # Configuración
 # ----------------------------------------------------------------------
 MONGO_URI = os.getenv(
-    "MONGO_URI", "mongodb://acha:acha123@localhost:27017/?authSource=admin"
+    MONGO_URI = os.environ["MONGO_URI"]
 )
 DATABASE_NAME = "upme_pdet"
 COLLECTION_NAME = "buildings_google"
