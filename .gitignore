@@ -6,15 +6,11 @@ skills/
 *.bkp
 data/raw/
 .venv/
-
-<<<<<<< HEAD
 .env
 **/.env
 data/google_open_buildings/raw/
 logs/*.log
 
-=======
->>>>>>> ec1955eece37fb8e48b29b6f8925ec0ffd8296cd
 # Archivos pesados geoespaciales y datos locales
 data/*.shp
 data/*.shx

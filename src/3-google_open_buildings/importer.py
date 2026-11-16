@@ -22,6 +22,7 @@ import pandas as pd
 import shapely
 from pymongo import MongoClient
 from pymongo.errors import BulkWriteError
+from shapely.geometry import shape
 
 # ----------------------------------------------------------------------
 # Configuración
@@ -30,7 +31,7 @@ MONGO_URI = os.getenv(
     "MONGO_URI", "mongodb://acha:acha123@localhost:27017/?authSource=admin"
 )
 DATABASE_NAME = "upme_pdet"
-COLLECTION_NAME = "google_open_buildings"
+COLLECTION_NAME = "buildings_google"
 CONTROL_COLLECTION = "etl_processed_files"
 
 RAW_DIR = "data/google_open_buildings/raw"
@@ -49,8 +50,7 @@ KEEP_FOOTPRINT = False
 RESET = os.getenv("ETL_RESET", "0") == "1"
 
 USECOLS = ["latitude", "longitude", "confidence", "area_in_meters"]
-if KEEP_FOOTPRINT:
-    USECOLS.append("geometry")
+
 
 # ----------------------------------------------------------------------
 # Estado por proceso (se inicializa en cada worker)
@@ -59,11 +59,12 @@ _UNION_GEOM = None
 _BOUNDS = None
 _COL = None
 _CONTROL = None
+_MUNI = None
 
 
 def _init_worker():
     """Carga la geometría PDET preparada y abre una conexión propia a Mongo."""
-    global _UNION_GEOM, _BOUNDS, _COL, _CONTROL
+    global _UNION_GEOM, _BOUNDS, _COL, _CONTROL, _MUNI
 
     gdf_pdet = gpd.read_file(PDET_UNION_PATH)
     union_geom = gdf_pdet.geometry.union_all()
@@ -75,38 +76,44 @@ def _init_worker():
     db = client[DATABASE_NAME]
     _COL = db[COLLECTION_NAME]
     _CONTROL = db[CONTROL_COLLECTION]
+    docs = list(db["municipalities_pdet"].find({}, {"cod_dane_mpio": 1, "geometry": 1}))
+    _MUNI = gpd.GeoDataFrame(
+        {"cod_dane_mpio": [d["cod_dane_mpio"] for d in docs]},
+        geometry=[shape(d["geometry"]) for d in docs],
+        crs=4326,
+    )
 
 
 def _build_docs(chunk: pd.DataFrame, source_file: str):
-    """Construye los documentos de Mongo de forma eficiente (sin iterrows)."""
-    lons = chunk["longitude"].to_numpy().tolist()
-    lats = chunk["latitude"].to_numpy().tolist()
-    conf = chunk["confidence"].fillna(0.0).astype(float).to_numpy().tolist()
-    area = chunk["area_in_meters"].fillna(0.0).astype(float).to_numpy().tolist()
-
-    if KEEP_FOOTPRINT:
-        foot = chunk["geometry"].tolist()
-        return [
-            {
-                "location": {"type": "Point", "coordinates": [lo, la]},
-                "confidence": c,
-                "area_in_meters": a,
-                "footprint": f,
-                "source_file": source_file,
-            }
-            for lo, la, c, a, f in zip(lons, lats, conf, area, foot)
-        ]
-
+    """Asigna el municipio a cada edificio y arma los documentos."""
+    pts = gpd.GeoDataFrame(
+        chunk[["confidence", "area_in_meters"]].reset_index(drop=True),
+        geometry=gpd.points_from_xy(chunk["longitude"], chunk["latitude"]),
+        crs=4326,
+    )
+    j = gpd.sjoin(pts, _MUNI, how="inner", predicate="within")
+    j = j[~j.index.duplicated()]
+    meta = {
+        "imagery_dates": None,
+        "license": "ODbL-1.0",
+        "batch_id": f"google-{source_file}",
+        "loaded_at": time.strftime("%Y-%m-%dT%H:%M:%S+00:00", time.gmtime()),
+    }
     return [
         {
-            "location": {"type": "Point", "coordinates": [lo, la]},
-            "confidence": c,
-            "area_in_meters": a,
+            "cod_dane_mpio": cod,
+            "dataset_source": "google_open_buildings",
+            "centroid": {"type": "Point", "coordinates": [x, y]},
+            "rooftop_area_m2": None if pd.isna(a) else float(a),
+            "confidence": None if pd.isna(c) else float(c),
+            "capture_metadata": meta,
             "source_file": source_file,
         }
-        for lo, la, c, a in zip(lons, lats, conf, area)
+        for cod, x, y, a, c in zip(
+            j["cod_dane_mpio"], j.geometry.x, j.geometry.y,
+            j["area_in_meters"], j["confidence"],
+        )
     ]
-
 
 def _insert(docs):
     """Inserta en lotes y reporta errores parciales sin ocultarlos."""
@@ -233,10 +240,12 @@ def main():
 
     # Índices al final para máximo rendimiento de carga
     print("\nCreando índices en MongoDB...")
-    buildings_col.create_index([("location", "2dsphere")], name="location_2dsphere")
+    buildings_col.create_index([("centroid", "2dsphere")], name="centroid_2dsphere")
+    buildings_col.create_index(
+        [("cod_dane_mpio", 1), ("rooftop_area_m2", -1)], name="mpio_area"
+    )
     buildings_col.create_index([("source_file", 1)], name="source_file_1")
-    # Descomenta solo si vas a filtrar por confianza:
-    # buildings_col.create_index([("confidence", 1)], name="confidence_1")
+    
 
     client.close()
     elapsed = time.perf_counter() - start_global

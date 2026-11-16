@@ -203,7 +203,7 @@ Después de la carga completa se hicieron tres comprobaciones en MongoDB:
 Google Open Buildings publica las edificaciones en archivos comprimidos (`.csv.gz`), uno por cada celda del mapa (llamada _tesela S2_). Cada fila trae la latitud y longitud del edificio, un nivel de confianza, su área en metros cuadrados y la huella en formato WKT. Como el proyecto solo trabaja con los 170 municipios PDET, el proceso hace dos descartes:
 
 - *Al descargar:* solo se bajan las teselas que tocan las zonas de estudio, no todas las de Colombia.
-- *Al cargar:* de cada tesela descargada, solo se guardan los edificios cuyo punto cae dentro de la frontera PDET unificada (`pdet_union.geojson`).
+- *Al cargar:* de cada tesela descargada, solo se guardan los edificios cuyo punto cae dentro de un municipio PDET. A cada edificio se le asigna el código de su municipio (`cod_dane_mpio`), igual que en la carga de Microsoft.
 
 Cada edificio guardado queda con estos campos:
 
@@ -215,14 +215,16 @@ Cada edificio guardado queda con estos campos:
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Campo*], [*Qué contiene*],
-      [`location`], [Punto GeoJSON (longitud, latitud) del edificio. Tiene el índice espacial.],
-      [`confidence`], [Confianza de Google de que es un edificio. Si falta, se guarda 0,0.],
-      [`area_in_meters`], [Área de la huella, en metros cuadrados.],
+      [`cod_dane_mpio`], [Código del municipio PDET donde cae el edificio.],
+      [`dataset_source`], [Fuente del dato: `google_open_buildings`.],
+      [`centroid`], [Punto GeoJSON (longitud, latitud) del edificio. Tiene el índice espacial.],
+      [`rooftop_area_m2`], [Área de la huella, en metros cuadrados, tal como la entrega Google. Vacía (`null`) si falta.],
+      [`confidence`], [Confianza de Google de que es un edificio. Vacía (`null`) si falta.],
+      [`capture_metadata`], [Licencia, identificador de la carga y fecha en que se cargó.],
       [`source_file`], [Archivo de origen. Sirve para reanudar y para limpiar cargas a medias.],
-      [`footprint`], [Huella en WKT. Solo se guarda si se activa `KEEP_FOOTPRINT`.],
     )
   ],
-  caption: [Campos de cada documento en `google_open_buildings`.],
+  caption: [Campos de cada documento en `buildings_google`.],
 )
 
 === Requisitos
@@ -292,7 +294,6 @@ Parámetros que se pueden cambiar sin tocar el código:
       [`ETL_RESET=1`], [apagado], [Vacía la colección y el registro de control, y empieza de cero.],
       [`CHUNK_SIZE`], [500.000], [Filas del CSV que se leen por bloque. Bajarlo si falta memoria.],
       [`INSERT_BATCH_SIZE`], [50.000], [Documentos por envío a MongoDB.],
-      [`KEEP_FOOTPRINT`], [`False`], [Si es `True`, guarda también la huella en WKT.],
     )
   ],
   caption: [Parámetros del ETL de Google Open Buildings.],
@@ -302,19 +303,18 @@ Parámetros que se pueden cambiar sin tocar el código:
 
 Se aplicaron estas ideas para que la carga fuera rápida y no gastara memoria de más:
 
-- *Leer solo lo necesario.* Se leen únicamente las columnas de latitud, longitud, confianza y área. La columna de la huella, que es la más pesada, se omite salvo que se pida.
+- *Leer solo lo necesario.* Se leen únicamente las columnas de latitud, longitud, confianza y área. La columna de la huella, que es la más pesada, no se lee.
 - *Leer por bloques.* Los archivos se leen en bloques de 500.000 filas, para no cargar un archivo completo en memoria.
 - *Descartar lo que no sirve cuanto antes.* Primero se descartan los puntos fuera del rectángulo que encierra la frontera PDET, que es una prueba muy barata. Después, a los que quedan, se les hace la prueba exacta de pertenencia con `shapely.contains_xy` sobre una frontera "preparada" (`shapely.prepare`), que acelera las consultas repetidas.
 - *Sin recorrer fila por fila.* El filtro espacial trabaja sobre todo el bloque a la vez, y los documentos se arman a partir de listas, sin `iterrows`.
-- *Un solo campo de ubicación.* Antes se guardaba el mismo punto dos veces (`geometry` y `location`). Ahora solo existe `location`, con un único índice `2dsphere`.
+- *Asignar el municipio.* Cada proceso carga una vez los 170 municipios desde MongoDB, y a los edificios que pasan el filtro se les busca su municipio con un cruce espacial. Así la colección queda con el mismo esquema que la de Microsoft y se puede contar por municipio sin pasos extra.
+- *Un solo campo de ubicación.* El punto se guarda una vez, en `centroid`, con un índice `2dsphere`. Se agregan además un índice por municipio y área (`cod_dane_mpio`, `rooftop_area_m2`) y uno por `source_file`.
 - *Varios archivos a la vez.* Cada archivo es independiente, así que se procesan en paralelo con `ProcessPoolExecutor`. Cada proceso abre su propia conexión a MongoDB y carga su propia copia de la frontera.
 - *Guardar por lotes.* Los edificios se envían en grupos de 50.000, en modo "sin orden" (`ordered=False`). Si algún lote falla en parte, se reporta cuántos entraron y cuántos no, en vez de ocultar el error.
 - *Poder repetir la carga sin duplicar.* Cada archivo terminado se anota en `etl_processed_files` y se salta en la siguiente corrida. Si una carga se corta a la mitad de un archivo, lo que alcanzó a entrar se borra (usando `source_file`) y el archivo se procesa de nuevo.
-- *Crear los índices al final.* El índice espacial (`location`) y el de `source_file` se construyen una sola vez, cuando ya están todos los datos.
+- *Crear los índices al final.* Los índices (`centroid`, municipio y área, y `source_file`) se construyen una sola vez, cuando ya están todos los datos.
 
 === Cuánto tardó
-
-Las cifras de esta carga se completan después de correrla completa. El script y la colección de control entregan todos los datos de la tabla.
 
 #figure(
   text(size: 10.5pt)[
@@ -325,31 +325,35 @@ Las cifras de esta carga se completan después de correrla completa. El script y
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Dato*], [*Valor*], [*De dónde sale*],
       [Teselas descargadas], [8], [Archivos `.csv.gz` en `raw/`.],
-      [Edificios leídos], [31499115], [Suma de `rows_read` en `etl_processed_files`.],
-      [Edificios guardados], [2694786], [Suma de `rows_inserted` en `etl_processed_files`.],
-      [Tiempo de la carga], [559.87s], [Mensaje final del script, en minutos.],
-      [Espacio en disco e índices], [766 MB], [`db.google_open_buildings.stats()` en MongoDB.],
+      [Edificios leídos], [31.499.115], [Suma de `rows_read` en `etl_processed_files`.],
+      [Edificios guardados], [2.694.786 (8,6 %)], [Suma de `rows_inserted` en `etl_processed_files`.],
+      [Tiempo de la carga], [X minutos], [Mensaje final del script (poner el valor real).],
+      [Tamaño de los datos sin comprimir], [1.040 MB], [`db.buildings_google.stats()`.],
+      [Espacio en disco], [184 MB], [`db.buildings_google.stats()`.],
+      [Espacio de los índices], [134 MB], [`db.buildings_google.stats()`.],
     )
   ],
-  caption: [Resultados de la carga de Google Open Buildings (por completar).],
+  caption: [Resultados de la carga de Google Open Buildings.],
 )
+
+Como en Microsoft, la gran mayoría de los edificios leídos (91,4 %) queda fuera, porque no está en un municipio PDET.
 
 === Cosas a tener en cuenta
 
-- *Solo se guarda el centroide.* El archivo de Google trae la huella del edificio como polígono, pero por defecto se guarda solo el punto. Si se necesita la huella, se activa `KEEP_FOOTPRINT`, a cambio de más tiempo de carga y más espacio.
-- *No se asigna municipio.* A diferencia de la carga de Microsoft, aquí solo se verifica que el edificio caiga en alguna zona PDET. Para saber de qué municipio es cada uno, hay que hacer después un cruce espacial con la colección de municipios.
-- *La confianza vacía se guarda como 0,0.* En la carga de Microsoft los datos vacíos se guardan como `null`. Esta diferencia importa al comparar las dos fuentes.
-- *Los puntos justo sobre el borde.* `contains_xy` deja fuera los puntos que están exactamente sobre el límite de la frontera. Es una diferencia mínima y no afecta los resultados en la práctica.
-- *Memoria.* Cada proceso mantiene su propio bloque de filas y su copia de la frontera. Si la memoria es justa, conviene bajar `ETL_WORKERS` o `CHUNK_SIZE`.
+- *Solo se guarda el centroide.* El archivo de Google trae la huella del edificio como polígono, pero se guarda solo el punto, que es lo que hace falta para contar edificios por municipio. El área sí se conserva, tal como la calcula Google.
+- *Cinco municipios sin edificios de Google.* Murindó y Vigía del Fuerte (Antioquia), y Bojayá, Medio San Juan y Nóvita (Chocó) no tienen ningún edificio en esta colección. Las teselas que cubren esas zonas sí se descargaron y se cargaron completas, así que con los datos de Google que se bajaron esos municipios simplemente no aparecen. Microsoft sí tiene edificios en los cinco (entre 1.331 y 2.004 en cada uno). Por eso los dos conjuntos no cubren lo mismo y el análisis final debe decirlo.
+- *Datos vacíos.* La confianza y el área vacías se guardan como `null`, igual que en Microsoft, para no confundir "sin dato" con "cero".
+- *Los puntos justo sobre el borde.* La prueba de pertenencia deja fuera los puntos que están exactamente sobre el límite de un municipio. Es una diferencia mínima y no afecta los resultados en la práctica.
+- *Memoria.* Cada proceso mantiene su propio bloque de filas y su copia de los municipios. Si la memoria es justa, conviene bajar `ETL_WORKERS` o `CHUNK_SIZE`.
 - *Credenciales.* La contraseña no debe escribirse en el código ni en este documento: se pasa por `MONGO_URI`.
 
 === Comprobaciones finales
 
-Después de la carga conviene hacer las mismas comprobaciones que con Microsoft:
+Después de la carga se revisó lo mismo que con Microsoft:
 
-- *Conteo.* Que el número de documentos en `google_open_buildings` coincida con la suma de `rows_inserted` en `etl_processed_files`.
-- *Uso del índice.* Que una consulta `$geoIntersects` o `$geoWithin` sobre `location` use el índice espacial (`IXSCAN`) y revise pocos documentos.
-- *Cobertura.* Que los municipios PDET, tras el cruce espacial con la colección de municipios, tengan edificios.
+- *Conteo.* La colección `buildings_google` tiene 2.694.786 documentos, igual a la suma de `rows_inserted` en `etl_processed_files`.
+- *Índices.* Quedaron creados `centroid_2dsphere`, `mpio_area` y `source_file_1`.
+- *Cobertura.* 165 de los 170 municipios PDET tienen edificios. Los cinco que faltan se explican en "Cosas a tener en cuenta".
 
 == Microsoft y Google: en qué se parecen y en qué no
 
@@ -363,14 +367,14 @@ Después de la carga conviene hacer las mismas comprobaciones que con Microsoft:
       [*Aspecto*], [*Microsoft*], [*Google Open Buildings*],
       [Archivos de origen], [232 archivos por _quadkey_], [Archivos `.csv.gz` por tesela S2],
       [Descarte de lo no PDET], [Por municipio, antes de guardar], [Por frontera PDET unificada, antes de guardar],
-      [Qué se guarda por edificio], [Huella, municipio, área de techo, altura, cuadro de origen], [Punto, confianza, área, archivo de origen (huella opcional)],
-      [Municipio], [Se asigna al cargar (`cod_dane_mpio`)], [No se asigna; requiere un cruce posterior],
-      [Datos vacíos], [Se guardan como `null`], [La confianza vacía se guarda como 0,0],
+      [Qué se guarda por edificio], [Huella, municipio, área de techo, altura, cuadro de origen], [Punto, municipio, área de techo, confianza, archivo de origen],
+      [Municipio], [Se asigna al cargar (`cod_dane_mpio`)], [Se asigna al cargar (`cod_dane_mpio`)],
+      [Datos vacíos], [Se guardan como `null`], [Se guardan como `null`],
       [Forma de procesar], [Un archivo a la vez, lotes de 5.000], [Varios archivos en paralelo, lotes de 50.000],
       [Repetir la carga], [Borra la colección y la vuelve a llenar], [Salta los archivos ya cargados; `ETL_RESET=1` para empezar de cero],
       [Índices], [Se crean al final], [Se crean al final],
+      [Municipios PDET con edificios], [170 de 170], [165 de 170],
     )
   ],
   caption: [Comparación de las dos cargas.],
 )
-
