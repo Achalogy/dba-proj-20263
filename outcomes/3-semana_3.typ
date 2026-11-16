@@ -11,8 +11,9 @@
     FINAL PROJECT: \
     Building Footprint Data Loading and Integration
   ]
+  #v(0.25cm)
   #text(size: 10pt)[
-    https://github.com/Achalogy/dba-proj-20263
+    #link("https://github.com/Achalogy/dba-proj-20263")[https://github.com/Achalogy/dba-proj-20263]
   ]
 
   #v(1.5cm)

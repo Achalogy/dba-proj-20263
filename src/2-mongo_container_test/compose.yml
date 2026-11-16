@@ -1,0 +1,84 @@
+services:
+
+  mongodb:
+    image: mongo:9.0
+    container_name: mongodb
+    restart: unless-stopped
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+
+    ports:
+      - "127.0.0.1:27017:27017"
+
+    volumes:
+      - mongodb_data:/data/db
+
+    command:
+      - mongod
+      - --wiredTigerCacheSizeGB
+      - "1"
+
+    mem_limit: 2g
+
+    healthcheck:
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --username
+        - ${MONGO_USER}
+        - --password
+        - ${MONGO_PASSWORD}
+        - --authenticationDatabase
+        - admin
+        - --eval
+        - "db.adminCommand('ping').ok"
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+    networks:
+      - pdet_network
+
+
+  importer:
+    build:
+      context: ../3-google_open_buildings
+      dockerfile: Dockerfile
+
+    container_name: open_buildings_importer
+    image: google-open-buildings:latest
+
+    profiles:
+      - import
+
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      MONGO_DATABASE: upme_pdet
+
+    volumes:
+      - ../../data/google_open_buildings:/data:ro
+      - ../../logs:/app/logs
+
+    mem_limit: 1g
+
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+    networks:
+      - pdet_network
+
+
+volumes:
+  mongodb_data:
+
+
+networks:
+  pdet_network:
+    driver: bridge
+
+

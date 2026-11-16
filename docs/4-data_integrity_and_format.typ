@@ -2,9 +2,9 @@
 
 == Alcance de esta etapa
 
-Esta etapa toma los datos ya verificados (ver la sección de Adquisición y Verificación de Datos) y los deja en el formato que pide la base de datos. El script `Prepare_pdet.py` lee el Excel de municipios PDET y la capa municipal del MGN del DANE, cruza ambos por código, reproyecta las geometrías, valida el resultado y construye un documento por municipio siguiendo el esquema `municipalities_pdet` del diagrama E-R.
+Esta etapa toma los datos ya verificados (ver la sección de Adquisición y Verificación de Datos) y los deja en el formato que pide la base de datos. El script `prepare-pdet.py` lee el Excel de municipios PDET y la capa municipal del MGN del DANE, cruza ambos por código, reproyecta las geometrías, valida el resultado y construye un documento por municipio siguiendo el esquema `municipalities_pdet` del diagrama E-R.
 
-*Estado en este commit.* La rama solo genera los documentos y los exporta a un archivo en formato NDJSON (un documento JSON por línea). *Todavía no se conecta a MongoDB*: el código de carga, los índices y las pruebas dentro de la base existen en el diseño, pero están deshabilitados en esta versión. Por eso el script se ejecuta siempre con la opción `--dry-run`. Los índices `2dsphere` y la consulta `$geoIntersects` quedan pendientes para la siguiente etapa.
+*Alcance operativo.* Esta etapa se enfoca en la estructuración, validación geométrica y exportación de los documentos a formato NDJSON (un documento JSON por línea) antes de su ingesta en base de datos. Por ello, la verificación de integridad puede ejecutarse de manera aislada con la opción `--dry-run`. La conexión activa, los índices `2dsphere` y la validación con consultas `$geoIntersects` se abordan y consolidan de manera exhaustiva en la siguiente sección del informe.
 
 == Requisitos para repetir el trabajo
 
@@ -16,12 +16,13 @@ Esta etapa toma los datos ya verificados (ver la sección de Adquisición y Veri
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
       [*Requisito*], [*Detalle*],
-      [Python], [Versión 3.10 o superior (el código usa la sintaxis `str | None`).],
-      [Librerías], [`geopandas`, `pyogrio`, `shapely` (2.0 o superior), `pandas`, `openpyxl` y `pymongo`.],
-      [Por qué `pymongo`], [El script importa `bson` (que viene con `pymongo`) para medir el tamaño de cada documento. Hace falta aunque no se use MongoDB.],
-      [Excel de municipios], [`data/MunicipiosPDET.xlsx`, con dos hojas (ver abajo).],
-      [Marco Geoestadístico], [DANE, MGN2025, descargado y descomprimido en `data/` (ver la sección de adquisición).],
-      [MongoDB], [No se necesita en este commit.],
+      [Gestor de paquetes], [`uv` (herramienta moderna de alto rendimiento para entornos y dependencias en Python).],
+      [Python], [Versión 3.10 o superior (manejada automáticamente por `uv`).],
+      [Librerías principales], [`geopandas`, `pyogrio`, `shapely` (>=2.0), `pandas`, `openpyxl` y `pymongo`.],
+      [Por qué `pymongo`], [El script importa `bson` (incluido con `pymongo`) para medir el tamaño exacto de cada documento. Hace falta incluso en modo `--dry-run`.],
+      [Excel de municipios], [`data/MunicipiosPDET.xlsx`, con dos hojas estructuradas.],
+      [Marco Geoestadístico], [DANE, MGN2025, capa municipal en `data/` o `data/raw/`.],
+      [MongoDB], [Requerido para la fase de persistencia (ver siguiente sección).],
     )
   ],
   caption: [Requisitos para ejecutar el script.],
@@ -29,64 +30,86 @@ Esta etapa toma los datos ya verificados (ver la sección de Adquisición y Veri
 
 *Estructura del Excel.* La Hoja 1 (se lee por posición, no por nombre) trae las columnas `Subregión PDET`, `Código DANE Departamento`, `Departamento`, `Código DANE Municipio` y `Municipio`. La Hoja 2 trae además una columna `id`, que se usa solo para la colección `catalogo_municipios_pdet` cuando se active la carga.
 
-== Instalación de dependencias
+== Gestión de Entorno y Dependencias con `uv`
 
-Se recomienda trabajar en un entorno virtual para no mezclar librerías con otros proyectos. Desde la raíz del repositorio, en PowerShell:
+Para asegurar la reproducibilidad estricta y evitar inconsistencias entre sistemas operativos, el proyecto utiliza *`uv`*. Todas las dependencias se encuentran declaradas en `src/1-pdet_mgn/pyproject.toml` y fijadas determinísticamente en `src/1-pdet_mgn/uv.lock`.
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install geopandas pyogrio "shapely>=2" pandas openpyxl pymongo
+```toml
+[project]
+name = "1-pdet-mgn"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "geopandas>=1.0.1",
+    "openpyxl>=3.1.5",
+    "pandas>=2.3.3",
+    "pymongo>=4.18.3",
+    "pyogrio>=0.11.1",
+    "shapely>=2",
+]
 ```
 
-En Linux o macOS, el entorno se activa con `source .venv/bin/activate` y el resto es igual. Para dejar las versiones registradas, el archivo `requirements.txt` debe incluir:
+=== Instalación y sincronización
 
-```text
-geopandas
-pyogrio
-shapely>=2
-pandas
-openpyxl
-pymongo
+Con `uv` instalado, no es necesario gestionar manualmente entornos virtuales. La sincronización se realiza con:
+
+```bash
+cd src/1-pdet_mgn
+uv sync
 ```
 
-Si `pip` no puede instalar `geopandas` en Windows, la alternativa más estable es usar un entorno de `conda` con `conda install -c conda-forge geopandas pyogrio`.
+O bien, es posible ejecutar cualquier script de forma directa y transparente desde la raíz del proyecto usando `uv run`, el cual resuelve y aisla el entorno en milisegundos:
+
+```bash
+uv run src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py --help
+```
 
 == Organización de los archivos
 
 ```text
 repositorio/
 ├── data/
-│   ├── MunicipiosPDET.xlsx          (se sube al repositorio)
+│   ├── MunicipiosPDET.xlsx          (catálogo oficial PDET)
 │   ├── raw/                         (excluida con .gitignore)
 │   │   └── MGN2025.../ADMINISTRATIVO/MGN_ADM_MPIO_GRAFICO.shp
 │   └── processed/
 │       └── municipalities_pdet.ndjson   (salida del script)
-├── scripts/
-│   ├── verify_mgn.py                (verificación, solo lectura)
-│   └── prepare_pdet.py              (preparación y exportación)
+├── src/
+│   ├── 1-pdet_mgn/
+│   │   ├── pyproject.toml           (declaración de dependencias para uv)
+│   │   ├── uv.lock                  (bloqueo de dependencias)
+│   │   └── src/1_pdet_mgn/
+│   │       ├── verify_mgn.py        (verificación de calidad de capas)
+│   │       └── prepare-pdet.py      (limpieza, reproyección y carga)
+│   └── 2-mongo_container_test/
+│       └── compose.yml              (instancia local de MongoDB)
 └── reports/
     └── mgn_verification.json
 ```
 
-La carpeta `data/raw/` pesa varios gigabytes y no se sube a GitHub. La carpeta `data/processed/` se crea sola al exportar.
-
 == Cómo ejecutar el script
 
-Los comandos se escriben desde la raíz del repositorio, para que las rutas relativas funcionen.
+Los comandos se escriben desde la raíz del repositorio empleando `uv run`:
 
-*Comando recomendado en este commit:*
+*Comando para validación y exportación en modo autónomo (`--dry-run`):*
+
+```bash
+uv run src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py \
+  --mgn data/MGN_ADM_MPIO_GRAFICO.shp \
+  --xlsx data/MunicipiosPDET.xlsx \
+  --dry-run \
+  --export data/processed/municipalities_pdet.ndjson
+```
+
+En entornos Windows PowerShell, el salto de línea se realiza con acento grave (\`):
 
 ```powershell
-python scripts/prepare_pdet.py `
+uv run src/1-pdet_mgn/src/1_pdet_mgn/prepare-pdet.py `
   --mgn data/MGN_ADM_MPIO_GRAFICO.shp `
   --xlsx data/MunicipiosPDET.xlsx `
   --dry-run `
   --export data/processed/municipalities_pdet.ndjson
 ```
-
-En PowerShell, el acento grave al final de cada línea permite partir el comando en varias líneas. En Linux o macOS se usa `\`, y en CMD se usa `^`. También puede escribirse todo en una sola línea.
 
 #figure(
   text(size: 10.5pt)[
@@ -100,14 +123,12 @@ En PowerShell, el acento grave al final de cada línea permite partir el comando
       [`--layer`], [No], [Nombre de la capa municipal. Solo hace falta con `.gdb` o `.gpkg`; con un `.shp` se ignora. Si no se indica, se busca una capa cuyo nombre contenga `MPIO`.],
       [`--xlsx`], [No], [Ruta al Excel de municipios PDET. Por defecto es `data/MunicipiosPDET.xlsx`.],
       [`--export`], [No], [Ruta del archivo `.ndjson` de salida. Si no se indica, no se escribe ningún archivo.],
-      [`--dry-run`], [No, pero necesario hoy], [Valida y exporta sin tocar MongoDB. En este commit debe usarse siempre.],
-      [`--uri`, `--db`], [No], [Conexión y nombre de la base de MongoDB. *Deshabilitados en este commit*; se activan con la carga.],
+      [`--dry-run`], [No], [Valida y exporta sin tocar MongoDB. Ideal para pruebas de integridad previas a la ingesta.],
+      [`--uri`, `--db`], [No], [Conexión y nombre de la base de MongoDB. Por defecto `mongodb://localhost:27017` y `upme_pdet`.],
     )
   ],
-  caption: [Argumentos de `prepare_pdet.py`.],
+  caption: [Argumentos de `prepare-pdet.py`.],
 )
-
-*Importante.* Si el script se ejecuta sin `--dry-run` en esta versión, genera los documentos y luego falla con un error de tipo `AttributeError`, porque el bloque de conexión a MongoDB está deshabilitado. No se pierde ni se daña ningún dato, pero tampoco se carga nada.
 
 == Qué hace el script, paso a paso
 
@@ -122,7 +143,7 @@ En PowerShell, el acento grave al final de cada línea permite partir el comando
 
 Ante cualquier problema de integridad el script termina con un mensaje `[ERROR]` y un código de salida distinto de cero, en lugar de continuar con datos dudosos.
 
-== Resultado obtenido en este commit
+== Resultado obtenido en esta etapa
 
 Con los datos reales (MGN2025 y `MunicipiosPDET.xlsx`), el script terminó sin errores y mostró:
 
@@ -133,7 +154,7 @@ Documentos listos: 170 | subregiones: 16
 #figure(
   text(size: 10.5pt)[
     #table(
-      columns: (2.2fr, 1.2fr, 2.4fr),
+      columns: (2.2fr, 1.2fr, 2.6fr),
       align: (left, center, left),
       stroke: 0.5pt + luma(150),
       fill: (_, row) => if row == 0 { rgb("d0e2ff") } else { none },
@@ -198,14 +219,13 @@ Documentos listos: 170 | subregiones: 16
 
 *Reproducibilidad.* Todos los campos salen igual en cada ejecución, excepto `metadata_mgn.cargado_en`, que guarda la fecha y hora (UTC) de generación. Por eso dos archivos exportados en momentos distintos no serán idénticos byte a byte, aunque los datos sean los mismos.
 
-== Lo que aún no hace esta rama
+== Transición a la Integración NoSQL
 
-- *No se conecta a MongoDB.* El código de carga está deshabilitado en este commit.
-- *No crea índices.* El índice único sobre `cod_dane_mpio`, el `2dsphere` sobre `geometry` y el de `subregion_pdet.id` quedan pendientes.
-- *No prueba el `2dsphere`.* Una geometría válida para Shapely puede ser rechazada por el índice esférico de MongoDB. Esa comprobación solo es posible al crear el índice en la base.
-- *No carga el catálogo* `catalogo_municipios_pdet` del diagrama E-R.
-- *No valida dentro de la base*: falta el conteo de 170 documentos y la consulta `$geoIntersects` con un punto de cada municipio.
+Una vez garantizada la integridad topológica, la conformidad de tamaños en BSON y la estandarización de atributos de los 170 municipios PDET, los datos quedan listos para su persistencia en el motor de base de datos NoSQL:
 
-== Siguiente paso
+- *Conexión activa a MongoDB:* Despliegue del servicio mediante contenedores Docker y autenticación administrativa.
+- *Carga e idempotencia:* Ingesta masiva en las colecciones `municipalities_pdet` y `catalogo_municipios_pdet`.
+- *Indexación espacial esférica:* Creación y comprobación de los índices `2dsphere` sobre `geometry`, junto con los índices únicos B-Tree.
+- *Validación espacial in situ:* Ejecución de pruebas de intersección esférica `$geoIntersects` con el punto interior (`point_on_surface`) de cada municipio.
 
-Reactivar el bloque de MongoDB: restaurar los argumentos `--uri` (por defecto `mongodb://localhost:27017`) y `--db` (por defecto `upme_pdet`), iniciar el servicio local de MongoDB, ejecutar el script sin `--dry-run`, y registrar en esta sección los índices creados y el resultado de las pruebas de validación. Con eso queda cubierto el requisito de evidencia de índices espaciales de la Fase 2.
+Las anteriores actividades se consolidan y evidencian de manera exhaustiva en la siguiente sección del informe (*Integración Geoespacial en NoSQL*).
