@@ -1,0 +1,28 @@
+{
+  "tag": "prueba_tumaco",
+  "batch_size": 5000,
+  "index_first": false,
+  "dry_run": false,
+  "leidos": 15995,
+  "descartados_geometria": 0,
+  "fuera_pdet": 919,
+  "insertados": 15076,
+  "errores_insercion": 0,
+  "archivos": 1,
+  "segundos": {
+    "descarga": 1.9,
+    "lectura": 0.4,
+    "proceso": 0.7,
+    "insercion": 0.3,
+    "indices": 0.4,
+    "total": 3.7
+  },
+  "docs_por_segundo": 4096,
+  "memoria_pico_mb": 214,
+  "almacenamiento": {
+    "tamano_logico_mb": 8.6,
+    "en_disco_mb": 0.0,
+    "indices_mb": 0.9,
+    "documentos": 15076
+  }
+}
