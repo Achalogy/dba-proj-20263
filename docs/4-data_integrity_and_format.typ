@@ -260,11 +260,11 @@ Para garantizar la compatibilidad entre ambos datasets satelitales y la colecci�
 - *Sistema de referencia espacial único:* Todas las geometrías GeoJSON (`geometry` y `centroid`) se almacenan en coordenadas geográficas *WGS84 (`EPSG:4326`)* requeridas por los índices `2dsphere`.
 - *Homologación de llave municipal (`cod_dane_mpio`):* A cada edificación se le asigna su código DANE de 5 dígitos mediante unión espacial (`gpd.sjoin(..., predicate="within")`) contra los 170 polígonos cargados en `municipalities_pdet`, descartando duplicados en fronteras (`~j.index.duplicated()`).
 - *Representación explícita de nulos:* Los atributos faltantes (`height_m` cuando Microsoft reporta `-1`, o `confidence` / `rooftop_area_m2` cuando aparecen `NaN` en Google) se persisten como `null` en BSON en lugar de valores centinela numéricos.
-- *Conformidad de tamaño BSON:* Ningún documento individual se acerca al límite de 16 MB de MongoDB; el tamaño promedio es de *579 bytes* en `buildings_microsoft` y ~*386 bytes* en `buildings_google`.
+- *Conformidad de tamaño BSON:* Ningún documento individual se acerca al límite de 16 MB de MongoDB; el tamaño promedio es de *579 bytes* en `buildings_microsoft` y \~*386 bytes* en `buildings_google`.
 
 === Formato y esquema implementado: `buildings_microsoft`
 
-El script `src/3-buildings-microsoft/load_microsoft.py` (ejecutable en modo validación con `--dry-run`) limpia cada geometría con `shapely.set_precision(..., 1e-7)` (~1 cm), repara polígonos inválidos mediante `shapely.make_valid`, verifica que sean `Polygon` o `MultiPolygon`, calcula el centroide (`shapely.centroid`), proyecta las huellas a *`EPSG:9377`* (MAGNA-SIRGAS Origen Nacional) para obtener `rooftop_area_m2` redondeada a 2 decimales y genera documentos con la siguiente estructura:
+El script `src/3-buildings-microsoft/load_microsoft.py` (ejecutable en modo validación con `--dry-run`) limpia cada geometría con `shapely.set_precision(..., 1e-7)` (\~1 cm), repara polígonos inválidos mediante `shapely.make_valid`, verifica que sean `Polygon` o `MultiPolygon`, calcula el centroide (`shapely.centroid`), proyecta las huellas a *`EPSG:9377`* (MAGNA-SIRGAS Origen Nacional) para obtener `rooftop_area_m2` redondeada a 2 decimales y genera documentos con la siguiente estructura:
 
 ```json
 {
@@ -308,7 +308,7 @@ El pipeline `src/3-google_open_buildings/importer.py` construye el punto GeoJSON
 === Decisiones de diseño respecto al esquema preliminar (Semana 1)
 
 Durante la implementación de la Fase 3 se adoptaron tres ajustes documentados respecto al diseño conceptual inicial de `docs/1-implementation_plan.typ` y `docs/2-schema_and_data_modeling.typ`:
-+ *Simplificación geométrica en `buildings_google`:* Se almacenó únicamente `centroid` (`Point`) junto con `rooftop_area_m2` precalculada por Google, omitiendo el polígono WKT (`geometry`) y `full_plus_code`. Esta decisión reduce drásticamente el consumo de RAM, tiempo de ingesta y espacio en disco (~176 MiB comprimidos para 2,69 millones de documentos) sin afectar el objetivo del proyecto (conteo y área agregada por municipio).
++ *Simplificación geométrica en `buildings_google`:* Se almacenó únicamente `centroid` (`Point`) junto con `rooftop_area_m2` precalculada por Google, omitiendo el polígono WKT (`geometry`) y `full_plus_code`. Esta decisión reduce drásticamente el consumo de RAM, tiempo de ingesta y espacio en disco (\~176 MiB comprimidos para 2,69 millones de documentos) sin afectar el objetivo del proyecto (conteo y área agregada por municipio).
 + *Atributo `source_file` para idempotencia:* Se incorporó el campo `source_file` en `buildings_google` para permitir reanudación segura y limpieza parcial ante fallos por archivo sin duplicar registros.
 + *Aplicación diferida de la regla `RN-05`:* No se filtraron áreas extremas (`< 10 m²` o `> 20.000 m²`) durante la carga inicial para preservar íntegra la distribución cruda observada en el EDA (mínimos de `9,69 m²` en MS y `2,51 m²` en Google; máximos de `44.667,17 m²` y `20.916,70 m²`). Los umbrales de área útil para instalación solar se aplicarán en la fase analítica de la Semana 4.
 
