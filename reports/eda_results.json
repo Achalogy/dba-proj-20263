@@ -11,7 +11,7 @@
       "index_name": "geometry_2dsphere",
       "winning_stage": "FETCH",
       "input_stage": "IXSCAN",
-      "execution_time_ms": 40,
+      "execution_time_ms": 1,
       "total_docs_examined": 62,
       "n_returned": 1,
       "status": "OK"
@@ -22,7 +22,7 @@
       "index_name": "centroid_2dsphere",
       "winning_stage": "FETCH",
       "input_stage": "IXSCAN",
-      "execution_time_ms": 17,
+      "execution_time_ms": 8,
       "total_docs_examined": 2519,
       "n_returned": 1977,
       "status": "OK"
@@ -33,7 +33,7 @@
       "index_name": "centroid_2dsphere",
       "winning_stage": "FETCH",
       "input_stage": "IXSCAN",
-      "execution_time_ms": 90,
+      "execution_time_ms": 54,
       "total_docs_examined": 17413,
       "n_returned": 11604,
       "status": "OK"
@@ -43,7 +43,7 @@
       "index_name": "mpio_area",
       "winning_stage": "FETCH",
       "input_stage": "IXSCAN",
-      "execution_time_ms": 128,
+      "execution_time_ms": 56,
       "total_docs_examined": 33971,
       "n_returned": 33971,
       "status": "OK"
@@ -52,27 +52,27 @@
   "almacenamiento": {
     "buildings_microsoft": {
       "size_mb": 973.02,
-      "storage_size_mb": 247.99,
-      "total_index_size_mb": 111.54,
+      "storage_size_mb": 248.49,
+      "total_index_size_mb": 111.39,
       "avg_obj_size_bytes": 579,
       "index_sizes": {
-        "_id_": 19705856,
+        "_id_": 19529728,
+        "geometry_2dsphere": 31703040,
         "centroid_2dsphere": 27217920,
         "mpio_area": 29618176,
-        "quadkey_1": 8720384,
-        "geometry_2dsphere": 31690752
+        "quadkey_1": 8736768
       }
     },
     "buildings_google": {
       "size_mb": 992.0,
-      "storage_size_mb": 176.25,
-      "total_index_size_mb": 127.68,
+      "storage_size_mb": 175.54,
+      "total_index_size_mb": 127.46,
       "avg_obj_size_bytes": 386,
       "index_sizes": {
-        "_id_": 29986816,
+        "_id_": 29724672,
         "centroid_2dsphere": 41623552,
         "mpio_area": 49369088,
-        "source_file_1": 12902400
+        "source_file_1": 12935168
       }
     }
   },
@@ -82,7 +82,7 @@
     "avg_area_m2": 125.56621943082723,
     "min_area_m2": 9.69,
     "max_area_m2": 44667.17,
-    "std_area_m2": 234.2751836123624
+    "std_area_m2": 234.2751836123597
   },
   "stats_area_g": {
     "_id": null,
@@ -90,14 +90,14 @@
     "avg_area_m2": 82.75518062629092,
     "min_area_m2": 2.5141,
     "max_area_m2": 20916.6964,
-    "std_area_m2": 125.85917536261192
+    "std_area_m2": 125.85917536260627
   },
   "conf_g": {
     "_id": null,
     "avg_conf": 0.7796497999470087,
     "min_conf": 0.65,
     "max_conf": 0.9834,
-    "std_conf": 0.06863318409280908
+    "std_conf": 0.06863318409281162
   },
   "conf_bins_g": [
     {
@@ -185,17 +185,6 @@
   },
   "missing_in_g": [
     {
-      "_id": "27099",
-      "count": 2004,
-      "total_area_m2": 172832.0,
-      "avg_area_m2": 86.2435129740519,
-      "cod_dane_mpio": "27099",
-      "municipio": "BOJAYÁ",
-      "departamento": "CHOCÓ",
-      "subregion_id": 5,
-      "subregion_nombre": "CHOCÓ"
-    },
-    {
       "_id": "27450",
       "count": 1627,
       "total_area_m2": 155031.27,
@@ -225,6 +214,17 @@
       "cod_dane_mpio": "05475",
       "municipio": "MURINDÓ",
       "departamento": "ANTIOQUIA",
+      "subregion_id": 5,
+      "subregion_nombre": "CHOCÓ"
+    },
+    {
+      "_id": "27099",
+      "count": 2004,
+      "total_area_m2": 172832.0,
+      "avg_area_m2": 86.2435129740519,
+      "cod_dane_mpio": "27099",
+      "municipio": "BOJAYÁ",
+      "departamento": "CHOCÓ",
       "subregion_id": 5,
       "subregion_nombre": "CHOCÓ"
     },
@@ -693,14 +693,14 @@
       "id": 1,
       "nombre": "ALTO PATÍA Y NORTE DEL CAUCA",
       "count": 271668,
-      "total_area_m2": 30357903.28,
+      "total_area_m2": 30357903.279999994,
       "mpios": 24
     },
     {
       "id": 2,
       "nombre": "ARAUCA",
       "count": 74675,
-      "total_area_m2": 10196032.47,
+      "total_area_m2": 10196032.469999999,
       "mpios": 4
     },
     {
@@ -714,14 +714,14 @@
       "id": 4,
       "nombre": "CATATUMBO",
       "count": 89632,
-      "total_area_m2": 9218525.82,
+      "total_area_m2": 9218525.819999998,
       "mpios": 8
     },
     {
       "id": 5,
       "nombre": "CHOCÓ",
       "count": 37692,
-      "total_area_m2": 3425103.62,
+      "total_area_m2": 3425103.6199999996,
       "mpios": 14
     },
     {
@@ -735,14 +735,14 @@
       "id": 7,
       "nombre": "MACARENA - GUAVIARE",
       "count": 94110,
-      "total_area_m2": 11485555.149999999,
+      "total_area_m2": 11485555.15,
       "mpios": 12
     },
     {
       "id": 8,
       "nombre": "MONTES DE MARÍA",
       "count": 129388,
-      "total_area_m2": 11821192.289999997,
+      "total_area_m2": 11821192.290000003,
       "mpios": 15
     },
     {
@@ -756,7 +756,7 @@
       "id": 10,
       "nombre": "PACÍFICO Y FRONTERA NARIÑENSE",
       "count": 79144,
-      "total_area_m2": 8173511.340000001,
+      "total_area_m2": 8173511.34,
       "mpios": 11
     },
     {
@@ -791,14 +791,14 @@
       "id": 15,
       "nombre": "SUR DEL TOLIMA",
       "count": 48072,
-      "total_area_m2": 4765049.4399999995,
+      "total_area_m2": 4765049.44,
       "mpios": 4
     },
     {
       "id": 16,
       "nombre": "URABÁ ANTIOQUEÑO",
       "count": 113400,
-      "total_area_m2": 15341316.020000001,
+      "total_area_m2": 15341316.02,
       "mpios": 8
     }
   ],
@@ -807,7 +807,7 @@
       "id": 1,
       "nombre": "ALTO PATÍA Y NORTE DEL CAUCA",
       "count": 388378,
-      "total_area_m2": 30917857.9818,
+      "total_area_m2": 30917857.981800005,
       "mpios": 24
     },
     {
@@ -821,7 +821,7 @@
       "id": 3,
       "nombre": "BAJO CAUCA Y NORDESTE ANTIOQUEÑO",
       "count": 142783,
-      "total_area_m2": 10956730.039,
+      "total_area_m2": 10956730.038999999,
       "mpios": 13
     },
     {
@@ -835,28 +835,28 @@
       "id": 5,
       "nombre": "CHOCÓ",
       "count": 20722,
-      "total_area_m2": 1731031.0335000001,
+      "total_area_m2": 1731031.0335,
       "mpios": 9
     },
     {
       "id": 6,
       "nombre": "CUENCA DEL CAGUÁN Y PIEDEMONTE CAQUETEÑO",
       "count": 182694,
-      "total_area_m2": 21019068.1455,
+      "total_area_m2": 21019068.145499997,
       "mpios": 17
     },
     {
       "id": 7,
       "nombre": "MACARENA - GUAVIARE",
       "count": 113455,
-      "total_area_m2": 10231516.9669,
+      "total_area_m2": 10231516.966899998,
       "mpios": 12
     },
     {
       "id": 8,
       "nombre": "MONTES DE MARÍA",
       "count": 215874,
-      "total_area_m2": 14290094.4315,
+      "total_area_m2": 14290094.431499997,
       "mpios": 15
     },
     {
@@ -870,21 +870,21 @@
       "id": 10,
       "nombre": "PACÍFICO Y FRONTERA NARIÑENSE",
       "count": 71020,
-      "total_area_m2": 5283644.0846,
+      "total_area_m2": 5283644.084600001,
       "mpios": 11
     },
     {
       "id": 11,
       "nombre": "PUTUMAYO",
       "count": 136711,
-      "total_area_m2": 12608782.958600001,
+      "total_area_m2": 12608782.9586,
       "mpios": 9
     },
     {
       "id": 12,
       "nombre": "SIERRA NEVADA - PERIJÁ",
       "count": 645009,
-      "total_area_m2": 53754351.21520001,
+      "total_area_m2": 53754351.2152,
       "mpios": 15
     },
     {
@@ -898,7 +898,7 @@
       "id": 14,
       "nombre": "SUR DE CÓRDOBA",
       "count": 114887,
-      "total_area_m2": 8725475.959200002,
+      "total_area_m2": 8725475.9592,
       "mpios": 5
     },
     {
@@ -912,7 +912,7 @@
       "id": 16,
       "nombre": "URABÁ ANTIOQUEÑO",
       "count": 218242,
-      "total_area_m2": 18228575.147600003,
+      "total_area_m2": 18228575.1476,
       "mpios": 8
     }
   ]

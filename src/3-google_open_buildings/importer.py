@@ -27,9 +27,11 @@ from shapely.geometry import shape
 # ----------------------------------------------------------------------
 # Configuración
 # ----------------------------------------------------------------------
-MONGO_URI = os.environ["MONGO_URI"]
+MONGO_URI = os.getenv(
+    "MONGO_URI", "mongodb://acha:acha@localhost:27017/?authSource=admin"
+)
 
-DATABASE_NAME = os.getenv("MONGO_DATABASE", "upme_pdet")
+DATABASE_NAME = os.getenv("MONGO_DATABASE") or os.getenv("MONGO_DB") or "upme_pdet"
 COLLECTION_NAME = "buildings_google"
 CONTROL_COLLECTION = "etl_processed_files"
 
@@ -196,7 +198,9 @@ def main():
 
     if not os.path.exists(PDET_UNION_PATH):
         raise FileNotFoundError(
-            f"No se encontró el archivo de unión PDET en {PDET_UNION_PATH}."
+            f"No se encontró el archivo de unión PDET en {PDET_UNION_PATH}. "
+            "Ejecuta primero: uv run --project src/3-google_open_buildings "
+            "python src/3-google_open_buildings/generate_pdet_union.py"
         )
 
     csv_files = sorted(glob.glob(os.path.join(RAW_DIR, "*.csv.gz")))

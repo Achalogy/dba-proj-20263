@@ -1,0 +1,14 @@
+[project]
+name = "5-geospatial-workflow"
+version = "0.1.0"
+description = "Flujo reproducible de análisis geoespacial: conteo de techos, estimación de área, potencial solar y generación de gráficas/mapas para municipios PDET."
+requires-python = ">=3.10"
+dependencies = [
+  "geopandas>=1.0.0",
+  "matplotlib>=3.9.0",
+  "numpy>=1.26.0",
+  "pandas>=2.2.0",
+  "pymongo>=4.10.0",
+  "scipy>=1.13.0",
+  "shapely>=2.0.0",
+]

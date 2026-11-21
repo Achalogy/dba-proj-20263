@@ -14,6 +14,12 @@ os.makedirs(RAW_DIR, exist_ok=True)
 
 # 1. Cargar la geometría unificada de los municipios PDET
 pdet_union_path = os.path.join(BOUNDARIES_DIR, "pdet_union.geojson")
+if not os.path.exists(pdet_union_path):
+    raise FileNotFoundError(
+        f"No se encontró {pdet_union_path}. Ejecuta primero: "
+        "uv run --project src/3-google_open_buildings "
+        "python src/3-google_open_buildings/generate_pdet_union.py"
+    )
 gdf_pdet = gpd.read_file(pdet_union_path)
 union_geom = gdf_pdet.geometry.union_all()
 
@@ -32,18 +38,24 @@ for _, row in df_index.iterrows():
 
 print(f"Teselas identificadas que intersecan con PDET: {len(tiles_to_download)}")
 
-# 4. Descargar los archivos comprimidos correspondientes a la carpeta raw
+# 4. Descargar los archivos comprimidos correspondientes a la carpeta raw (escritura atómica)
 for token in tiles_to_download:
     file_name = f"{token}_buildings.csv.gz"
     file_url = f"https://storage.googleapis.com/open-buildings-data/v3/polygons_s2_level_4_gzip/{file_name}"
     dest_path = os.path.join(RAW_DIR, file_name)
 
-    if not os.path.exists(dest_path):
+    if not os.path.exists(dest_path) or os.path.getsize(dest_path) == 0:
         print(f"Descargando tesela {file_name}...")
+        tmp_path = dest_path + ".part"
         response = requests.get(file_url, stream=True, timeout=120)
         if response.status_code == 200:
-            with open(dest_path, "wb") as f:
+            with open(tmp_path, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
+            os.replace(tmp_path, dest_path)
         else:
-            print(f"No se pudo descargar la tesela {file_name}")
+            print(
+                f"No se pudo descargar la tesela {file_name} (HTTP {response.status_code})"
+            )
+    else:
+        print(f"Tesela {file_name} ya existe; omitiendo descarga.")

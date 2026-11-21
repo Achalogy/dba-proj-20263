@@ -26,3 +26,4 @@ data/*.sr.lock
 # Copias o similar
 
 data/*.zip
+data/*.archive

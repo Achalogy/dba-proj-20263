@@ -1,0 +1,91 @@
+{
+  "source_results": "reports/workflow/workflow_results.json",
+  "generated_at": "2026-11-21T17:03:59+00:00",
+  "dpi": 300,
+  "formats": [
+    "png"
+  ],
+  "figures": [
+    {
+      "id": "01_map_pdet_rooftop_area",
+      "category": "maps",
+      "title": "Mapa Coroplético de Área Total de Techos (Microsoft vs. Google)",
+      "description": "Comparación espacial de la superficie total de cubiertas (km², escala logarítmica) en los 170 municipios PDET.",
+      "files": [
+        "reports/figures/01_map_pdet_rooftop_area.png"
+      ]
+    },
+    {
+      "id": "02_map_pdet_solar_potential",
+      "category": "maps",
+      "title": "Mapa de Potencial Solar Fotovoltaico Estimado (MWp) en Municipios PDET",
+      "description": "Capacidad fotovoltaica instalable estimada (consenso híbrido MS-Google) destacando los municipios prioritarios para pilotos UPME.",
+      "files": [
+        "reports/figures/02_map_pdet_solar_potential.png"
+      ]
+    },
+    {
+      "id": "03_map_pdet_density_and_discrepancy",
+      "category": "maps",
+      "title": "Mapa de Densidad de Cubiertas y Discrepancia Relativa (Google vs. Microsoft)",
+      "description": "Densidad de área de techos respecto a la superficie municipal (m²/km²) y sesgo geográfico entre Microsoft y Google.",
+      "files": [
+        "reports/figures/03_map_pdet_density_and_discrepancy.png"
+      ]
+    },
+    {
+      "id": "04_subregions_comparison",
+      "category": "subregions",
+      "title": "Comparativa Microsoft vs. Google en las 16 Subregiones PDET",
+      "description": "Barras horizontales pareadas de área total de cubiertas (km²) y conteo de edificaciones (miles) por subregión PDET.",
+      "files": [
+        "reports/figures/04_subregions_comparison.png"
+      ]
+    },
+    {
+      "id": "05_top15_municipalities",
+      "category": "rankings",
+      "title": "Top 15 Municipios PDET por Área de Techos y Potencial Solar (MWp)",
+      "description": "Ranking de los 15 municipios PDET prioritarios comparando área estimada por Microsoft, Google y capacidad fotovoltaica de consenso.",
+      "files": [
+        "reports/figures/05_top15_municipalities.png"
+      ]
+    },
+    {
+      "id": "06_ms_vs_google_correlation",
+      "category": "comparison",
+      "title": "Análisis de Correlación y Convergencia Microsoft vs. Google (n=165)",
+      "description": "Dispersión log-log de área total (km²) y conteo de edificaciones por municipio con línea de identidad, banda ±20% y estadísticos de acuerdo.",
+      "files": [
+        "reports/figures/06_ms_vs_google_correlation.png"
+      ]
+    },
+    {
+      "id": "07_roof_size_strata",
+      "category": "morphology",
+      "title": "Distribución Morfológica por Estratos de Tamaño de Cubierta",
+      "description": "Contraste entre participación en número de edificaciones (%) y aporte al área total de techos (%) según tamaño de cubierta.",
+      "files": [
+        "reports/figures/07_roof_size_strata.png"
+      ]
+    },
+    {
+      "id": "08_google_confidence_and_filters",
+      "category": "quality",
+      "title": "Distribución de Confianza (Google) y Sensibilidad a Filtros de Calidad",
+      "description": "Histograma de puntaje de confianza en Google Open Buildings y comparación de área retenida bajo RN-04, RN-05 y umbral de alta certeza (>=0.75).",
+      "files": [
+        "reports/figures/08_google_confidence_and_filters.png"
+      ]
+    },
+    {
+      "id": "09_pareto_concentration",
+      "category": "strategy",
+      "title": "Curva de Concentración (Pareto) del Potencial Solar en Municipios PDET",
+      "description": "Porcentaje acumulado del área total de cubiertas al priorizar municipios del 1 al 170, indicando umbrales del 50% y 80%.",
+      "files": [
+        "reports/figures/09_pareto_concentration.png"
+      ]
+    }
+  ]
+}
