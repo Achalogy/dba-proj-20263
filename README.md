@@ -55,7 +55,7 @@ Utiliza el catálogo `data/MunicipiosPDET.xlsx` y el archivo validado `data/proc
 
 ### Opción B — Restauración rápida desde respaldo (`mongodump .archive`, ~1 min)
 
-Si se cuenta con el respaldo comprimido `data/upme_pdet.archive` (~282 MB):
+Si se cuenta con el respaldo comprimido `data/upme_pdet.archive` (~282 MB), que se descarga del Drive del grupo (https://drive.google.com/file/d/1iW2zaDCCuD74CivGDBEX6A8XAYrooNqc/view?usp=drive_link) y se guarda con ese nombre dentro de la carpeta `data/`:
 
 ```bash
 ./reproduce.sh --mode archive --start-mongo
@@ -105,7 +105,7 @@ uv run --project src/1-pdet_mgn python src/1-pdet_mgn/src/1_pdet_mgn/prepare-pde
 
 ### 3. Etapa 3A — Microsoft Global ML Building Footprints (`src/3-buildings-microsoft/`)
 
-Descarga automáticamente `dataset-links.csv` si no existe, filtra las 41 cuadrículas de Colombia contra los 170 municipios PDET, calcula áreas reales en `EPSG:9377`, inserta en lotes de 5.000 documentos y crea índices al final:
+Descarga automáticamente `dataset-links.csv` si no existe, baja los 232 archivos de Colombia, se queda solo con los edificios que caen en los 170 municipios PDET, calcula áreas reales en `EPSG:9377`, inserta en lotes de 5.000 documentos y crea índices al final:
 
 ```bash
 uv run --project src/3-buildings-microsoft \
