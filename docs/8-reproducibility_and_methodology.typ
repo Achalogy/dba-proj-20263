@@ -1,5 +1,13 @@
 = Flujo de Análisis Geoespacial Reproducible y Metodología (Reproducibility & Methodology)
+== Cómo se calcula el conteo y el área por municipio
 
+La pregunta central del proyecto es cuántos techos hay en cada municipio PDET y cuánta área suman. Se responde en tres pasos, para cada fuente por separado:
+
++ *Cada edificio ya sabe en qué municipio está.* Al cargar los datos, a cada edificio se le guardó el código DANE de su municipio. Así no hace falta repetir el cruce espacial en el análisis.
++ *Se agrupa por municipio.* MongoDB agrupa los edificios por el código del municipio, cuenta cuántos hay y suma el área de sus techos (`rooftop_area_m2`).
++ *Se unen las dos fuentes.* Los resultados de Microsoft y de Google se ponen lado a lado en una sola tabla de 170 filas, una por municipio. De ahí salen las comparaciones, el consenso y el potencial solar.
+
+Un detalle importante: el área de los techos no se midió igual en las dos fuentes. En Microsoft la calculamos nosotros a partir del polígono, en la proyección oficial de Colombia (EPSG:9377). En Google es el área que ya trae el dato original. Por eso las comparaciones entre fuentes deben leerse con ese matiz.
 == Arquitectura Modular del Flujo de Análisis Geoespacial
 
 El flujo analítico de la Fase 4 se implementó en el módulo `src/5-geospatial_workflow/` como una canalización (_pipeline_) completamente automatizada, idempotente, modular y extensible sobre *MongoDB 9.0*. A diferencia de los flujos exploratorios manuales en hojas de cálculo o cuadernos dispersos, toda la agregación de los *4.455.833 documentos de edificaciones* se ejecuta directamente dentro del motor NoSQL mediante el *Aggregation Framework*, garantizando bajo consumo de memoria en el cliente y tiempos de respuesta inferiores a 35 segundos sobre la base completa.
@@ -28,8 +36,7 @@ Para evitar distorsiones geométricas en el cálculo de superficies, la arquitec
 
 === Estrategia de Consenso Híbrido Multi-Fuente (Microsoft + Google)
 
-Dado que los modelos satelitales presentan diferencias conocidas de segmentación —Google fragmenta edificaciones contiguas generando mayor conteo y menor área media (`82,76 m²`), mientras Microsoft agrupa estructuras vecinas con menor conteo y mayor área media (`125,57 m²`)— y que Google Open Buildings V3 carece de inferencia en *5 municipios selváticos* de la subregión Chocó debido a nubosidad ecuatorial persistente, se definió un estimador de *consenso híbrido* $A_("consenso", i)$ para cada municipio $i in {1, dots.c, 170}$:
-
+Las dos fuentes miden distinto. Google detecta más edificios, pero más pequeños (82,76 m² de promedio), y Microsoft menos, pero más grandes (125,57 m²). Una explicación posible es que cada modelo separa o une de forma diferente las construcciones vecinas, aunque esto no se comprobó. Además, Google no tiene ningún edificio en 5 municipios de la selva del Pacífico (Chocó y Urabá), tal vez por la nubosidad y la vegetación, pero tampoco se comprobó la causa. Para no perder esos municipios, se definió un estimador de *consenso híbrido* $A_("consenso", i)$ para cada municipio $i in {1, dots.c, 170}$:
 $
   A_("consenso", i) = cases(
     frac(A_("MS", i) + A_("Google", i), 2) & "si el municipio" i "cuenta con cobertura en ambas fuentes (" n = 165 ")",
@@ -92,7 +99,7 @@ $
 
 Cada ejecución de `compute_metrics.py` realiza dos verificaciones automáticas obligatorias:
 
-+ *Auditoría de planes de ejecución (`explain` con `executionStats`):* Verifica que las consultas espaciales y analíticas sobre las cuatro colecciones activas operen con `IXSCAN` y sin escaneos lineales (`COLLSCAN`). En la ejecución de referencia sobre MongoDB 9.0.4 se obtuvieron cinco aprobaciones (5/5 `OK`) con latencias entre *1 ms y 53 ms*.
++ *Auditoría de planes de ejecución (`explain` con `executionStats`):* Verifica que las consultas espaciales y analíticas sobre las cuatro colecciones activas operen con `IXSCAN` y sin escaneos lineales (`COLLSCAN`). En la ejecución de referencia sobre MongoDB 9.0 se obtuvieron cinco aprobaciones (5/5 `OK`) con latencias entre *1 ms y 53 ms*.
 + *Huella criptográfica determinística (`SHA-256`):* El script serializa en orden canónico las claves numéricas de las 170 filas municipales (excluyendo marcas de tiempo) y calcula su resumen criptográfico. Ejecuciones independientes sobre la base de datos restaurada producen exactamente el mismo hash:
   `312d57042a23729103d0a16c8950947730795b4c206335630e883e89441e84a6`, demostrando reproducibilidad determinística bit a bit.
 
@@ -111,8 +118,13 @@ Cada ejecución de `compute_metrics.py` realiza dos verificaciones automáticas 
       [`solar_aggregations` (Top 10 rank)], [`idx_solar_rank_subregion`], [`IXSCAN`], [1 ms], [10], [10],
     )
   ],
-  caption: [Resultados de la auditoría automática `explain(executionStats)` ejecutada por `compute_metrics.py` sobre MongoDB 9.0.4.],
+  caption: [Resultados de la auditoría automática `explain(executionStats)` ejecutada por `compute_metrics.py` sobre MongoDB 9.0 .],
 )
+
+== Verificación en un segundo equipo
+
+El flujo se ejecutó de nuevo en otro computador (Windows, Python 3.14, `uv` y MongoDB 9.0.8), sobre una base de datos cargada otra vez con los scripts del proyecto. El resultado fue el mismo: 170 municipios, 1.761.047 techos de Microsoft, 2.694.786 de Google y el mismo código `SHA-256` (`312d5704...`). El cálculo completo tardó unos 31 segundos (6 segundos con Microsoft y 24 con Google), y las 5 consultas de verificación usaron índice.
+Además, los archivos que genera el flujo (el JSON de resultados, las tablas CSV, el GeoJSON y las 9 figuras) quedaron idénticos a los que ya estaban guardados en el repositorio.
 
 == Ejecución Reproducible del Flujo Analítico (Fase 4)
 
@@ -135,3 +147,9 @@ uv run --project src/5-geospatial_workflow \
 ```
 
 Para reproducir el proyecto completo de extremo a extremo desde `src/1-pdet_mgn/` (incluyendo despliegue de Docker, carga de límites PDET, ingesta de Microsoft y Google, EDA y compilación de informes), el repositorio provee el orquestador raíz `./reproduce.sh` (`--mode full`, `--mode archive` y `--mode analysis`), documentado en detalle en la guía paso a paso del Informe Técnico Final y en el `README.md`.
+
+== Supuestos y límites
+
+- *Los parámetros del modelo solar son supuestos del grupo.* El 40 % de uso del techo, los 0,20 kWp/m² y los 1.450 kWh/kWp al año no vienen de la UPME. Se pueden cambiar con las opciones del programa, y el resultado cambia en la misma proporción.
+- *No hay un valor "verdadero" con el cual comparar.* El consenso promedia dos estimaciones de satélite; es una aproximación, no una medición en terreno.
+- *Google solo guarda el punto central del edificio*, no su forma, por lo que no se pueden comparar formas entre las dos fuentes.
