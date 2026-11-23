@@ -41,7 +41,7 @@
   config-common(handout: true),
 )
 
-#set text(font: ("Helvetica Neue", "Arial"), size: 17pt, fill: ink, lang: "es")
+#set text(font: ("Helvetica Neue", "Liberation Sans", "Arial"), size: 17pt, fill: ink, lang: "es")
 
 #show heading.where(level: 1): it => {
   text(size: 1.25em, weight: "bold", fill: navy)[#it.body]
