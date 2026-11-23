@@ -16,6 +16,10 @@
       de los 170 Municipios PDET de Colombia (UPME)
     ]
   ]
+  #v(0.2cm)
+  #text(size: 11pt, weight: "bold", fill: rgb("004385"))[
+    Versión Final Consolidada (Entrega Completa Semanas 1 a 4)
+  ]
   #v(0.25cm)
   #text(size: 10pt)[
     #link("https://github.com/Achalogy/dba-proj-20263")[https://github.com/Achalogy/dba-proj-20263]
