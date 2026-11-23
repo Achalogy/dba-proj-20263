@@ -1,4 +1,5 @@
 *.pdf
+!outcomes/*.pdf
 .DS_Store
 __MACOSX
 *.dtmp
