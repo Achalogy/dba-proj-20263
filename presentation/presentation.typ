@@ -168,18 +168,17 @@
 // ─────────────────────────────────────────
 == Validación Cruzada Inter-Fuente
 
-#grid(columns: (3fr, 2fr), gutter: 1em, align: horizon, [
-  #image("../reports/figures/06_ms_vs_google_correlation.png", height: 80%)
-], [
-  - *Pearson* $r = 0,985$
-  - *Spearman* $rho = 0,938$
-  - $n = 165$ municipios comunes
-  - 58,8 % dentro del ±20 %
-  #v(0.8em)
-  #block(fill: rgb("#eef7ee"), inset: 0.6em, radius: 0.4em, stroke: 1pt + rgb("#008800"))[
-    Convergencia\ *estadísticamente sólida*
-  ]
-])
+#align(center)[
+  #image("../reports/figures/06_ms_vs_google_correlation.png", height: 72%)
+]
+
+#v(0.4em)
+#grid(columns: (1fr, 1fr, 1fr, 1fr), gutter: 0.8em,
+  kpi([$r = 0,985$], [Pearson], color: rgb("#003865")),
+  kpi([$rho = 0,938$], [Spearman], color: rgb("#0b63a3")),
+  kpi([165], [Municipios comunes], color: rgb("#008800")),
+  kpi([0,85 %], [Diferencia de Área], color: rgb("#b86200")),
+)
 
 // ─────────────────────────────────────────
 == Consenso Híbrido y Modelo Solar
